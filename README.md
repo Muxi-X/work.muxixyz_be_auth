@@ -1,2 +1,2 @@
-# work.muxixyz_be
-The code of Project-Muxiworkshop
+# work.muxixyz_backend
+The backend code of Project-Muxixyz

@@ -121,6 +121,8 @@ paths:
             properties:
               token:
                 type: string
+        401:
+          description: User not existed
   /auth/verify/:
      post:
       tags:
@@ -144,7 +146,13 @@ paths:
       responses:
         200:
           description: OK
-        401:
+          schema:
+            required:
+              - uid
+            properties:
+              uid:
+                type: integer
+        402:
           description: FAIL
   /group/new/:
     post:

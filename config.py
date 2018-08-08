@@ -2,7 +2,7 @@ import os
 basedir=os.path.abspath(os.path.dirname(__file__))
 
 class Config:
-    SECRET_KEY='MUXI'S workshop'
+    SECRET_KEY='CCNU MUXI BEST TEAM'
     SQLALCHEMY_TRACK_MODIFICATIONS=False
     FLASKY_MAIL_SUBJECT_PREFIX='[Flasky]'
     FLASKY_MAIL_SENDER='Flasky Admin <shiina_orez@qq.com>'

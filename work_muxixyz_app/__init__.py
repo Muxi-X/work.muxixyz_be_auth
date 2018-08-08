@@ -8,7 +8,7 @@ from config import config
 
 mail=Mail()
 moment=Moment()
-db=SQLalchemy()
+db=SQLAlchemy()
 pagedown=PageDown()
 
 login_manager=LoginManager()

@@ -1,6 +1,6 @@
 import unittest
 import os
-from work.muxixyz_app import create_app,db
+from work_muxixyz_app import create_app,db
 from flask import current_app,url_for,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import random
@@ -11,7 +11,7 @@ db=SQLAlchemy()
 class BasicTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app(os.getenv('FLASK_CONFIG'$
+        self.app = create_app(os.getenv('FLASK_CONFIG') or 'default')
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
@@ -38,7 +38,7 @@ class BasicTestCase(unittest.TestCase):
             }),
             content_type='application/json'
         )
-        self.assertTrue(response.status_code=200)
+        self.assertTrue(response.status_code==200)
 
     def auth_b_login(self):
         response=self.client.post(
@@ -48,10 +48,10 @@ class BasicTestCase(unittest.TestCase):
             }),
             content_type='application/json'
         )
-        s=json.loads(response.data.decode('utf-8'))['t$
+        s=json.loads(response.data.decode('utf-8'))['token']
         global TOKEN
         TOKEN=s
-        self.assertTrue(response.status_code=200)
+        self.assertTrue(response.status_code==200)
 
     def auth_c_verify(self):
         response=self.client.post(
@@ -63,6 +63,6 @@ class BasicTestCase(unittest.TestCase):
         )
         s=json.loads(response.data.decode('utf-8'))['uid']
         print ('ID:'+string(s)+ ' ')
-        self.assertTrue(resopnse.status_code=200)
+        self.assertTrue(resopnse.status_code==200)
 
 # API FOR AUTH END

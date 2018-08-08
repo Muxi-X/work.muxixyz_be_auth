@@ -376,9 +376,9 @@ paths:
       responses:
         200:
           description: luckydog be a admin
-        407:
+        403:
           description: ddl
-        408:
+        401:
           description: auth fail
       security:
       - token: []

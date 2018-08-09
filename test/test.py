@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 import random
 import json
 
-db=SQLAlchemy()
+# db=SQLAlchemy()
 
 class BasicTestCase(unittest.TestCase):
 
@@ -17,17 +17,18 @@ class BasicTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         db.create_all()
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
+#    def tearDown(self):
+#        db.session.remove()
+#        db.drop_all()
+#        db.create_all()
+#        self.app_context.pop()
 
     def test_app_exist(self):
         self.assertFalse(current_app is None)
 
 # API FOR AUTH START
 
-    def auth_a_signup(self):
+    def test_auth_a_signup(self):
         response=self.client.post(
             url_for('api.signup',_external=True),
             data=json.dumps({
@@ -40,7 +41,7 @@ class BasicTestCase(unittest.TestCase):
         )
         self.assertTrue(response.status_code==200)
 
-    def auth_b_login(self):
+    def test_auth_b_login(self):
         response=self.client.post(
             url_for('api.login',_external=True),
             data=json.dumps({
@@ -53,16 +54,16 @@ class BasicTestCase(unittest.TestCase):
         TOKEN=s
         self.assertTrue(response.status_code==200)
 
-    def auth_c_verify(self):
+    def test_auth_c_verify(self):
         response=self.client.post(
             url_for('api.verify',_external=True),
-            data=jsopn.dumps({
+            data=json.dumps({
                 "token": TOKEN,
             }),
             content_type='application/json'
         )
         s=json.loads(response.data.decode('utf-8'))['uid']
-        print ('ID:'+string(s)+ ' ')
-        self.assertTrue(resopnse.status_code==200)
+        print ('ID:'+str(s)+ ' ')
+        self.assertTrue(response.status_code==200)
 
 # API FOR AUTH END

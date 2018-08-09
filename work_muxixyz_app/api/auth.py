@@ -20,7 +20,7 @@ def signup():
                 tel=tel,
             )
         db.session.add(usr)
-        db.commit()
+        db.session.commit()
         response=jsonify({
             "msg": 'successful!',
         })
@@ -36,7 +36,7 @@ def signup():
 @api.route('/auth/login/',methods=['POST'])
 def login():
     usrname=request.get_json().get('username')
-    usr=User.query.filter_by(username=usrname).first()
+    usr=User.query.filter_by(name=usrname).first()
     if usr is None:
         response=jsonify({
             "msg": 'user not existed!',
@@ -44,7 +44,7 @@ def login():
         response.status_code=401
         return response
     else:
-        token=usr.generate_confirmation_token()
+        token=usr.generate_confirmation_token(usr)
         response=jsonify({
             "token": token,
         })

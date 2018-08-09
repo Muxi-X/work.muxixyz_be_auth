@@ -1,11 +1,11 @@
 import time
 from . import db,login_manager
 from werkzeug.security import generate_password_hash,check_password_hash
-from flask_login import UserMixin,AnonymousUserMixin
+# from flask_login import UserMixin,AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
 
-class User(UserMixin,db.Model):
+class User(db.Model):
     __tablename__='users'
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String(20),unique=True)
@@ -13,10 +13,10 @@ class User(UserMixin,db.Model):
     avatar=db.Column(db.String(50))
     tel=db.Column(db.String(15))
     role=db.Column(db.Integer)
-    teamID=db.Column(db.Integer,db.ForeignKey('teams.id'))
-    groupID=db.Column(db.Integer,db.ForeignKey('groups.id'))
+    team_id=db.Column(db.Integer,db.ForeignKey('teams.id'))
+    group_id=db.Column(db.Integer,db.ForeignKey('groups.id'))
     status=db.relationship('Statu',backref='user',lazy='dynamic')
-    receiveMsgs=db.relationship('Comment',backref='user',lazy='dynamic')
+    receiveMsgs=db.relationship('Message',backref='user',lazy='dynamic')
 
     @staticmethod
     def generate_confirmation_token(self,expiration=3600):
@@ -56,14 +56,14 @@ class Project(db.Model):
     intro=db.Column(db.String)
     time=db.Column(db.String(50))
     count=db.Column(db.Integer)
-    teamID=db.Column(db.Integer,db.ForeignKey('teams.id'))
+    team_id=db.Column(db.Integer,db.ForeignKey('teams.id'))
     files=db.relationship('File',backref='project',lazy='dynamic')
 
 class User2Project(db.Model):
     __tablename__='user2projects'
     id=db.Column(db.Integer,primary_key=True)
-    userID=db.Column(db.Integer)
-    projectID=db.Column(db.Integer)
+    user_id=db.Column(db.Integer)
+    project_id=db.Column(db.Integer)
 
 class Statu(db.Model):
     __tablename__='status'
@@ -72,7 +72,7 @@ class Statu(db.Model):
     time=db.Column(db.String(50))
     like=db.Column(db.Integer)
     comment=db.Column(db.Integer)
-    userID=db.Column(db.Integer,db.ForeignKey('users.id'))
+    user_id=db.Column(db.Integer,db.ForeignKey('users.id'))
     comments=db.relationship('Comment',backref='statu',lazy='dynamic')
 
 class File(db.Model):
@@ -84,7 +84,7 @@ class File(db.Model):
     creator=db.Column(db.Integer)
     editor=db.Column(db.Integer)
     kind=db.Column(db.Boolean,default=False)
-    projectID=db.Column(db.Integer,db.ForeignKey('projetcs.id'))
+    project_id=db.Column(db.Integer,db.ForeignKey('projects.id'))
     comments=db.relationship('Comment',backref='file',lazy='dynamic')
 
 class Comment(db.Model):
@@ -94,7 +94,7 @@ class Comment(db.Model):
     content=db.Column(db.String)
     time=db.Column(db.String(50))
     creator=db.Column(db.Integer)
-    fileID=db.Column(db.Integer,db.ForeignKey('files,id'),default=0)
+    fileID=db.Column(db.Integer,db.ForeignKey('files.id'),default=0)
     statuID=db.Column(db.Integer,db.ForeignKey('status.id'),default=0)
 
 class Message(db.Model):
@@ -104,8 +104,25 @@ class Message(db.Model):
     action=db.Column(db.String)
     kind=db.Column(db.Integer)
     readed=db.Column(db.Boolean,default=False)
-    fromID=db.Column(db.Integer)
-    receiveID=db.Column(db.Integer,db.ForeignKey('users.id'))
-    fileID=db.Column(db.Integer,db.ForeignKey('files.id'),default=0)
-    statuID=db.Column(db.Integer,db.ForeignKey('status.id'),default=0)
-    commenID=db.Column(db.Integer,db.ForeignKey('comments.id'),default=0)
+    from_id=db.Column(db.Integer)
+    receive_id=db.Column(db.Integer,db.ForeignKey('users.id'))
+    file_id=db.Column(db.Integer,db.ForeignKey('files.id'),default=0)
+    statu_id=db.Column(db.Integer,db.ForeignKey('status.id'),default=0)
+    commen_id=db.Column(db.Integer,db.ForeignKey('comments.id'),default=0)
+
+def init_db():
+	db.create_all()
+	usr=User(name='tst',email='tst@test.com',tel='11111111111')
+	db.session.add(usr)
+	db.session.commit()
+
+if __name__ == '__main__':
+	init_db()
+
+
+
+
+
+
+
+

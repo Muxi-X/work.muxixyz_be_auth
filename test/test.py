@@ -39,6 +39,7 @@ class BasicTestCase(unittest.TestCase):
             }),
             content_type='application/json'
         )
+        print( url_for('api.signup',_external=True) )
         self.assertTrue(response.status_code==200)
 
     def test_auth_b_login(self):

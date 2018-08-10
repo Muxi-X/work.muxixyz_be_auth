@@ -2,7 +2,7 @@ swagger: '2.0'
 
 ### information start ###
 info:
-  description: work.muxixyz.com API
+  description: work.muxixyz.com API 
   version: 1.0.0
   title: Work API
   contact:
@@ -121,8 +121,6 @@ paths:
             properties:
               token:
                 type: string
-        401:
-          description: User not existed
   /auth/verify/:
      post:
       tags:
@@ -152,7 +150,7 @@ paths:
             properties:
               uid:
                 type: integer
-        402:
+        401:
           description: FAIL
   /group/new/:
     post:
@@ -217,25 +215,29 @@ paths:
               type: string
               description: next page & last page url
           schema:
-            type: array
-            items:
-              required:
-                - username
-                - userID
-                - groupName
-                - role
-                - email
-              properties:
-                username:
-                  type: string
-                userID:
-                  type: integer
-                groupName:
-                  type: string
-                role:
-                  type: integer
-                email:
-                  type: string
+            required: 
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - username
+                    - userID
+                    - groupName
+                    - role
+                    - email
+                  properties:
+                    username:
+                      type: string
+                    userID:
+                      type: integer
+                    groupName:
+                      type: string
+                    role:
+                      type: integer
+                    email:
+                      type: string
       security:
       - token: []
   /group/list/:
@@ -250,19 +252,23 @@ paths:
         200:
           description: OK
           schema:
-            type: array
-            items:
-              required:
-                - groupID
-                - groupName
-                - userCount
-              properties:
-                groupID:
-                  type: integer
-                groupName:
-                  type: string
-                userCount:
-                  type: integer
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - groupID
+                    - groupName
+                    - userCount
+                  properties:
+                    groupID:
+                      type: integer
+                    groupName:
+                      type: string
+                    userCount:
+                      type: integer
       security:
       - token: []            
   /project/{pid}/userList/:
@@ -283,19 +289,23 @@ paths:
         200:
           description: user list
           schema:
-            type: array
-            items:
-              required:
-                - username
-                - userID
-                - avatar
-              properties:
-                username:
-                  type: string
-                userID:
-                  type: integer
-                avatar:
-                  type: string 
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - username
+                    - userID
+                    - avatar
+                  properties:
+                    username:
+                      type: string
+                    userID:
+                      type: integer
+                    avatar:
+                      type: string 
       security:
       - token: []    
   /user/{uid}/project/list/:
@@ -316,19 +326,23 @@ paths:
         200:
           description: OK
           schema:
-            type: array
-            items:
-              required:
-                - projectID
-                - projectName
-                - userCount
-              properties:
-                projectID:
-                  type: integer
-                projectName:
-                  type: string
-                userCount:
-                  type: integer
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - projectID
+                    - projectName
+                    - userCount
+                  properties:
+                    projectID:
+                      type: integer
+                    projectName:
+                      type: string
+                    userCount:
+                      type: integer
       security:
       - token: []
   /user/2bMember/:
@@ -374,11 +388,8 @@ paths:
           description: who are the lucky dog
           schema:
             required:
-              - superuser
               - luckydog
             properties:
-              superuser:
-                type: string
               luckydog:
                 type: string
       responses:

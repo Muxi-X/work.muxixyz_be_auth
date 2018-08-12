@@ -10,6 +10,19 @@ import json
 
 class BasicTestCase(unittest.TestCase):
 
+    def get_api_headers(self,ifToken):
+        if ifToken is True:
+            return {
+                'token': TOKEN,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        else:
+            return {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+
     def setUp(self):
         self.app = create_app(os.getenv('FLASK_CONFIG') or 'default')
         self.app_context = self.app.app_context()
@@ -37,9 +50,9 @@ class BasicTestCase(unittest.TestCase):
                 "avatar": 'https://test/test.png',
                 "tel": '11111111111',
             }),
-            content_type='application/json'
+            headers=self.get_api_headers(False),
         )
-        print( url_for('api.signup',_external=True) )
+#        print( url_for('api.signup',_external=True) )
         self.assertTrue(response.status_code==200)
 
     def test_auth_b_login(self):
@@ -48,21 +61,24 @@ class BasicTestCase(unittest.TestCase):
             data=json.dumps({
                 "username": 'test',
             }),
-            content_type='application/json'
+            headers=self.get_api_headers(False),
         )
         s=json.loads(response.data.decode('utf-8'))['token']
         global TOKEN
         TOKEN=s
+#        print (TOKEN)
         self.assertTrue(response.status_code==200)
 
     def test_auth_c_verify(self):
+#        print (TOKEN)
         response=self.client.post(
             url_for('api.verify',_external=True),
+            headers=self.get_api_headers(True),
             data=json.dumps({
                 "token": TOKEN,
             }),
-            content_type='application/json'
         )
+#        print (response.status_code)
         s=json.loads(response.data.decode('utf-8'))['uid']
         print ('ID:'+str(s)+ ' ')
         self.assertTrue(response.status_code==200)

@@ -2,6 +2,7 @@ from flask import jsonify,request,current_app,url_for
 from . import api
 from .. import db
 from ..models import Team,Group,User,Project,Message,Statu,File,Comment
+from ..decorator import login_required
 
 from werkzeug.security import generate_password_hash,check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -52,7 +53,9 @@ def login():
         return response
 
 @api.route('/auth/verify/',methods=['POST'])
-def verify():
+@login_required
+def verify(uid):
+#    print (uid)
     t=request.get_json().get('token')
     s=Serializer(current_app.config['SECRET_KEY'])
     try:

@@ -216,15 +216,18 @@ paths:
               description: next page & last page url
           schema:
             required: 
+              - count
               - list
             properties:
+              count:
+                type: integer
               list:
                 type: array
                 items:
                   required:
                     - username
                     - userID
-                    - groupName
+#                    - groupName
                     - role
                     - email
                   properties:
@@ -232,8 +235,8 @@ paths:
                       type: string
                     userID:
                       type: integer
-                    groupName:
-                      type: string
+#                    groupName:
+#                      type: string
                     role:
                       type: integer
                     email:

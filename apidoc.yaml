@@ -1588,3 +1588,98 @@ paths:
           description: insufficient permissions
       security:
       - token: []
+
+
+# DEFINITIONS
+definitions:
+  User:
+    required:
+      - id
+      - name
+      - email
+      - avatar
+      - tel
+      - role
+      - email_service
+      - message
+      - team_id
+      - group_id
+      - status
+      - receiveMsgs
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: username
+      email:
+        type: string
+        description: email address
+      avatar:
+        type: string
+        description: avatar url
+      tel:
+        type: string
+        description: telephone number
+      role:
+        type: integer
+        description: role,100->superuser
+      email_service:
+        type: boolean
+        description: open email_service or not
+      message:
+        type: boolean
+        description: receive message or not
+      team_id:
+        type: intger
+        description: foreign key of TEAM
+      group_id:
+        type: intger
+        description: foreign key of GROUP
+      status:
+        description: status
+      receiveMsgs: 
+        description: messages
+  Team:
+    required:
+      - id
+      - name
+      - count
+      - time
+      - creator
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: team name
+      count:
+        type: integer
+        description: member count
+      time:
+        type: string
+        description: time to create
+      creator:
+        type: integer
+        description: foreign key of who create the team
+  Group:
+    required:
+      - id
+      - name
+      - count
+      - leader
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: group name
+      count:
+        type: integer
+        description: member count
+      leader:
+        type: intger
+        description: foreign key of who lead this team in this year      

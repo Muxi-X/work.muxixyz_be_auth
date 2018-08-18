@@ -319,37 +319,37 @@ paths:
                       type: string 
       security:
       - token: []
-  /project/list/:
-    get:
-      tags:
-        - management
-      summary: only superuser & admin & group leader can get a project list
-      description: verify token and get a list
-      produces:
-        - application/json
-      responses:
-        200:
-          description: OK
-          schema:
-            required:
-              - projectList
-            properties:
-              projectList:
-                type: array
-                items:
-                  required:
-                    - projectID
-                    - projectName
-                    - userCount
-                  properties:
-                    projectID:
-                      type: integer
-                    projectName:
-                      type: string
-                    userCount:
-                      type: integer
-      security:
-      - token: []
+#  /project/list/:
+#    get:
+#      tags:
+#       - management
+#      summary: only superuser & admin & group leader can get a project list
+#     description: verify token and get a list
+#      produces:
+#        - application/json
+#      responses:
+#        200:
+#          description: OK
+#          schema:
+#            required:
+#              - projectList
+#            properties:
+#              projectList:
+#                type: array
+#                items:
+#                  required:
+#                    - projectID
+#                    - projectName
+#                    - userCount
+#                  properties:
+#                    projectID:
+#                      type: integer
+#                    projectName:
+#                      type: string
+#                    userCount:
+#                      type: integer
+#      security:
+#      - token: []
   /user/project/list/:
     get:
       tags:

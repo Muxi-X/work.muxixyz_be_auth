@@ -703,6 +703,15 @@ paths:
               - avatar
               - time
               - content
+            properties:
+              username:
+                type: string
+              avatar:
+                type: string
+              time:
+                type: string
+              content:
+                type: string
         401:
           description: verify failed
         402:

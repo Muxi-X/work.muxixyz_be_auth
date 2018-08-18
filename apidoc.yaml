@@ -1632,10 +1632,10 @@ definitions:
         type: boolean
         description: receive message or not
       team_id:
-        type: intger
+        type: integer
         description: foreign key of TEAM
       group_id:
-        type: intger
+        type: integer
         description: foreign key of GROUP
       status:
         description: status
@@ -1681,5 +1681,192 @@ definitions:
         type: integer
         description: member count
       leader:
-        type: intger
+        type: integer
         description: foreign key of who lead this team in this year      
+  Project:
+    required:
+      - id
+      - name
+      - intro
+      - time
+      - count
+      - team_id
+      - files
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: project name
+      intro:
+        type: string
+        description: project simple introduction
+      time:
+        type: string
+        description: when this project was created
+      count:
+        type: integer
+        description: user count
+      team_id:
+        type: integer
+        description: foreign key of TEAM
+      files:
+        description: files
+  User2Project:
+    required:
+      - id
+      - user_id
+      - project_id
+    properties:
+      id:
+        type: integer
+        description: primary key
+      user_id:
+        type: integer
+        description: foreign key of USER
+      projetc_id:
+        type: integer
+        description: foreign key of PROJECT
+  Statu:
+    required:
+      - id
+      - content
+      - time
+      - like
+      - comment
+      - user_id
+      - comments
+    properties:
+      id:
+        type: integer
+        description: primary key
+      content:
+        type: string
+        description: including of statu
+      time:
+        type: string
+        description: the time you post this statu
+      like:
+        type: string
+        description: the number your statu get LIKE!
+      comment:
+        type: string
+        description: the number your statu's comment
+      user_id:
+        type: integer
+        description: foreign key
+      comments:
+        description: comments
+  File:
+    required:
+      - id
+      - url
+      - path
+      - filename
+      - creator
+      - editor
+      - kind
+      - project_id
+      - comments
+    properties:
+      id:
+        type: integer
+        description: primary key
+      url:
+        type: string
+        description: URL of qiniu cloud
+      path:
+        type: string
+        description: file basedir
+      filename:
+        type: string
+        description: filename
+      creator:
+        type: integer
+        description: foreign key of this file's creator
+      editor:
+        type: integer
+        description: foreign key of this file lastest editor
+      kind:
+        type: integer
+        description: is file or status doc
+      project_id:
+        type: integer
+        description: foreign key of PROJECT
+      comments:
+        description: comments
+  Comment:
+    required:
+      - id
+      - kind
+      - content
+      - time
+      - creator
+      - file_id
+      - statu_id
+    properties:
+      id:
+        type: integer
+        description: primary key
+      kind:
+        type: integer
+        description: destination is file or statu  
+      content:
+        type: string
+        description: comment including
+      time:
+        type: string
+        description: post time
+      creator:
+        type: integer
+        description: foreign key of poster
+      file_id:
+        type: integer
+        description: if you comment FILE
+      statu_id:
+        type: integer
+        description: if you comment STATU
+  Message:
+    required:
+      - id
+      - time
+      - action
+      - kind
+      - readed
+      - from_id
+      - receive_id
+      - file_id
+      - statu_id
+      - comment_id
+    properties:
+      id:
+        type: integer
+        description: primary key
+      time:
+        type: string
+        description: birth time
+      action:
+        type: string
+        description: such as 'LIKE','COMMENT','UPLOAD'...
+      kind:
+        type: integer
+        description: FILE STATU or COMMENT
+      readed:
+        type: boolean
+        description: readed or not readed
+      from_id:
+        type: integer
+        description: foreign key of who make this message
+      receive_id:
+        type: integer
+        description: who will receive it 
+      file_id:
+        type: integer
+        description: if from file
+      statu_id:
+        type: integer
+        description: if from statu
+      comment_id:
+        type: integer
+        description: if from comment

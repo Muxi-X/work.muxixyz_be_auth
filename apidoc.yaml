@@ -256,9 +256,9 @@ paths:
           description: OK
           schema:
             required:
-              - list
+              - groupList
             properties:
-              list:
+              groupList:
                 type: array
                 items:
                   required:
@@ -288,13 +288,21 @@ paths:
           description: projectID
           required: true
           type: integer
+        - in: path
+          name: page
+          description: page
+          required: true
+          type: integer
       responses:
         200:
           description: user list
           schema:
             required:
               - list
+              - count
             properties:
+              count:
+                type: integer
               list:
                 type: array
                 items:
@@ -310,19 +318,50 @@ paths:
                     avatar:
                       type: string 
       security:
-      - token: []    
-  /user/{uid}/project/list/:
+      - token: []
+  /project/list/:
+    get:
+      tags:
+        - management
+      summary: only superuser & admin & group leader can get a project list
+      description: verify token and get a list
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - projectList
+            properties:
+              projectList:
+                type: array
+                items:
+                  required:
+                    - projectID
+                    - projectName
+                    - userCount
+                  properties:
+                    projectID:
+                      type: integer
+                    projectName:
+                      type: string
+                    userCount:
+                      type: integer
+      security:
+      - token: []
+  /user/project/list/:
     get:
       tags:
         - management
       summary: get a project list
-      description: verify token and get a list,uid==0 is all project list
+      description: verify token and get a list
       produces:
         - application/json
       parameters:
         - in: path
-          name: uid
-          description: userID
+          name: page
+          description: page
           required: true
           type: integer
       responses:
@@ -331,7 +370,10 @@ paths:
           schema:
             required:
               - list
+              - count
             properties:
+              count:
+                type: integer
               list:
                 type: array
                 items:
@@ -373,6 +415,8 @@ paths:
           description: OK
         401:
           description: verify failed
+        402:
+          description: user already be a member
       security:
       - token: []
   /user/addAdmin/:

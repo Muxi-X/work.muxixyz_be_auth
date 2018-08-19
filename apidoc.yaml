@@ -1184,6 +1184,57 @@ paths:
           description: verify failed
       security:
       - token: []
+  /status/{uid}/list/:
+    get:
+      tags:
+        - status
+      summary: get a list of one user status
+      description: one page have 20 status
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: page
+          description: page number
+          required: true
+          type: integer
+        - in: path
+          name: uid
+          description: user ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+#          headers:
+#            links:
+#              type: string
+#              description: next page & last page url
+          schema:
+            required:
+              - statuList
+            properties:
+              statuList:
+                type: array
+                items:
+                  required:
+                    - time
+                    - content
+                    - likeCount
+                    - commentCount
+                  properties:
+                    time:
+                      type: string
+                    content:
+                      type: string
+                    likeCount:
+                      type: integer
+                    commentCount:
+                      type: integer
+        401:
+          description: verify failed
+      security:
+      - token: []
   /status/{sid}/comment/{cid}/:
     get:
       tags:

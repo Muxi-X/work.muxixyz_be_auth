@@ -1474,44 +1474,6 @@ paths:
                       type: string
       security:
       - token: []
-    post:
-      tags:
-        - project
-      summary: pull someone in this project
-      description: get a user list and add it into project
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: pid
-          description: projectID
-          required: true
-          type: integer
-        - name: POSTdata
-          in: body
-          description: data to verify and get user list
-          schema:
-            required:
-              - userlist
-              - adminname
-            properties:
-              userlist:
-                type: array
-                items:
-                  required:
-                    - userID
-                  properties:
-                    userID:
-                      type: integer
-              username:
-                type: string
-      responses:
-        200:
-          description: email have been send
-      security:
-      - token: []
     put:
       tags:
         - project
@@ -1529,22 +1491,20 @@ paths:
           type: integer
         - name: POSTdata
           in: body
-          description: userlist&group
+          description: userlist
           schema:
             required:
-              - groupID
               - userList
             properties:
-              groupID:
-                type: integer
               userList:
                 type: array
                 items:
-                  required:
-                    - userID
-                  properties:
-                    userID:
-                      type: integer
+                  type: integer
+#                  required:
+#                    - userID
+#                  properties:
+#                    userID:
+#                      type: integer
       responses:
         200:
           description: change it successfully

@@ -896,7 +896,7 @@ paths:
           name: kind
           description: KIND[1]hover[0]click
           required: true
-          type: string
+          type: integer
         - in: path
           name: page
           description: default=1

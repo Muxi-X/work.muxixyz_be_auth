@@ -37,6 +37,9 @@ tags:
   - name: status
     description: 进度服务
 
+  - name: file
+    description: 文件服务
+    
 ### tag end ###
 
 ### auth start ###
@@ -838,7 +841,7 @@ paths:
               content:
                 type: string
       responses:
-        200:
+        201:
           description: OK
         401:
           description: verify failed
@@ -883,6 +886,599 @@ paths:
           description: message add successfully
       security:
       - token: []
+
+  # /project/{pid}/folder/:
+  #   post:
+  #     tags:
+  #       - file
+  #     summary: API for create a new top-level folder
+  #     description: create a new folder
+  #     parameters:
+  #       - in: path
+  #         name: pid
+  #         description: the folder's project id
+  #         required: true
+  #         type: integer
+  #       - name: POSTdata
+  #         in: body
+  #         description: the data to make a new folder
+  #         schema:
+  #           required:
+  #             - foldername
+  #           properties:
+  #             foldername:
+  #               type: string
+  #               description: the name of this folder
+  #     responses:
+  #       201:
+  #         description: created
+  #       401:
+  #         description: forbidden
+  #       403:
+  #         description: method not allowed
+  #       500:
+  #         description: server error
+  #     security:
+  #     - token: []
+  #   get:
+  #     tags:
+  #       - file
+  #     summary: the API for get top-level folderlist
+  #     description: you will get the list of this project's top-level folders and files
+  #     parameters:
+  #       - in: path
+  #         name: pid
+  #         description: the folder's project id
+  #         required: true
+  #         type: integer
+  #     responses:
+  #       200:
+  #         description: get it
+  #         schema:
+  #           required:
+  #             - fList
+  #           properties:
+  #             fList:
+  #               type: array
+  #               items:
+  #                 required:
+  #                   - kind
+  #                   - id
+  #                   - name
+  #                 properties:
+  #                   kind:
+  #                     type: integer
+  #                     description: 1 == file   2 == folder
+  #                   id:
+  #                     type: integer
+  #                     description: the id of file or folder
+  #                   name: 
+  #                     type: string
+  #                     description: the name of file or folder
+
+  #       401:
+  #         description: forbidden
+  #       403:
+  #         description: method not allowed
+  #       500:
+  #         description: server error
+  #     security:
+  #     - token: []
+
+  /project/{pid}/folder/{foid}/:
+    post:
+      tags:
+        - file
+      summary: API for create a new folder
+      description: create a new folder
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the folder's father-folder id, if you want to create a top-level folder, father-folder id should be 0
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          schema:
+            required:
+              - foldername
+              - kind
+            properties:
+              foldername:
+                type: string
+                description: the name you will use for new folder
+              kind:
+                type: boolean
+                description: false==folder of file   true==folder of md
+      responses:
+        201:
+          description: created
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    get:
+      tags: 
+        - file
+      summary: API for get a folder
+      description: get a new folder
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the folder's father-folder id, if you want to get a top-level folder, father-folder id should be 0
+          required: true
+          type: integer
+      responses:
+        200:
+          description: get it
+          schema:
+            required:
+              - fList
+              - mList
+            properties:
+              fList:
+                type: array
+                description: folder of file or file
+                items:
+                  required:
+                    - kind
+                    - id
+                    - name
+                  properties:
+                    kind:
+                      type: integer
+                      description: 1 == file   2 == folder
+                    id:
+                      type: integer
+                      description: the id of file or folder
+                    name: 
+                      type: string
+                      description: the name of file or folder
+              mList:
+                type: array
+                description: folder of md or md
+                items:
+                  required:
+                    - kind
+                    - id
+                    - name
+                  properties:
+                    kind:
+                      type: integer
+                      description: 1 == file   2 == folder
+                    id:
+                      type: integer
+                      description: the id of file or folder
+                    name: 
+                      type: string
+                      description: the name of file or folder
+        401:  
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+    put:
+      tags:
+        - file
+      summary: the API to edit folder's name
+      description: edit folder's name
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the folder's father-folder id, if you want to edit a top-level folder, father-folder id should be 0
+          required: true
+          type: integer
+        - name: PUTdata
+          in: body
+          schema:
+            required:
+              - foldername
+            properties:
+              foldername:
+                type: string
+                description: the name which you will user
+      responses:
+        200:
+          description: rename it
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    delete:
+      tags:
+        - file
+      summary: the API to delete a folder
+      description: use this API you will delete all folders and files in this folder, so use it carefully
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the folder's father-folder id, if you want to delete a top-level folder, father-folder id should be 0
+          required: true
+          type: integer
+      responses:
+        200:
+          description: delete it 
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+
+  /project/{pid}/file/{foid}/{fid}/:
+    post:
+      tags:
+        - file
+      summary: API for create or uploda a new md or file
+      description: create or uploda a new md or file
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father-folder id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: the value of fid is 0, which is certain
+        - name: POSTdata
+          in: body
+          schema:
+            required:
+              - filername
+              - kind
+            properties:
+              foldername:
+                type: string
+                description: the name you will use for new folder
+              kind:
+                type: boolean
+                description: false==file   true==md
+      responses:
+        201:
+          description: created
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    get:
+      tags: 
+        - file
+      summary: API for get a md or download a file
+      description: get a md or download a file
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father-folder id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: the id of md you want to edit or the id of file you want to download
+      responses:
+        200:
+          description: if this file is not md, you will download it without return data
+          schema:
+            required:
+              - mdlist
+            properties:
+              fList:
+                type: array
+                items:
+                  required:
+                    - name
+                    - content
+                    - lasteditor
+                    - creator
+                  properties:
+                    name: 
+                      type: string
+                      description: the name of file or folder
+                    content:
+                      type: string
+                      description: the content of this md
+                    finalleditor:
+                      type: string
+                      description: the lasteditor of this md
+                    creator:
+                      type: string
+                      description: the creator of this md
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+    put:
+      tags:
+        - file
+      summary: the API to edit md's conetnt
+      description: if this file if md you can edit md and change name, else you can only change name of file, and conetnt could be empty
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father-folder id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: id of file or md
+        - name: PUTdata
+          in: body
+          schema:
+            required:
+              - foldername
+              - conetnt
+            properties:
+              foldername:
+                type: string
+                description: the name which you will user
+              conetnt:
+                type: string
+                description: the new content of md, PS in method of get you will get all content and when you use method put you shuld give me all content rather than the content you add just now
+      responses:
+        200:
+          description: change it
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    delete:
+      tags:
+        - file
+      summary: the API to delete a file
+      description: delete a file
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: the id of file
+      responses:
+        200:
+          description: delete it 
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+
+  
+  /project/{pid}/f/{foid}/{toid}/:
+    put:
+      tags:
+        - file
+      summary: API for move folder file md
+      description: move folder file md
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          type: integer
+          description: the project id
+        - in: path
+          name: foid
+          required: true
+          type: integer
+          description: the id of folder you wnat to move
+        - in: path
+          name: toid
+          required: true
+          type: integer
+          description: the id of the folder you want to move to, and if you want to move folder to top-level folder, toid need to be 0
+        - name: PUTdata
+          in: body
+          schema:
+            required:
+              - kind
+            properties:
+              kind:
+                type: integer
+                description: 1==folder 2==file or md
+      responses:
+        200:
+          description: remove it
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+  /project/{pid}/re/{rid}/:
+    get:
+      tags: 
+        - file
+      summary: API for get recycle bin
+      description: get a nrecycle bin
+      parameters:
+        - in: path
+          name: pid
+          description: the nrecycle bin's project id
+          required: true
+          type: integer
+        - in: path
+          name: rid
+          description: the folder's father-folder id, if you want to get a top-level folder in nrecycle bin, father-folder id should be 0
+          required: true
+          type: integer
+      responses:
+        200:
+          description: get it
+          schema:
+            required:
+              - fList
+            properties:
+              fList:
+                type: array
+                description: folder of file or file
+                items:
+                  required:
+                    - kind
+                    - id
+                    - name
+                  properties:
+                    kind:
+                      type: integer
+                      description: 1 == file   2 == folder
+                    id:
+                      type: integer
+                      description: the id of file or folder
+                    name: 
+                      type: string
+                      description: the name of file or folder
+        401:  
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+    put:
+      tags: 
+        - file
+      summary: put back to the original position
+      description: put back the folder or file to the original position
+      parameters:
+        - in: path
+          name: pid
+          description: the nrecycle bin's project id
+          required: true
+          type: integer
+        - in: path
+          name: rid
+          description: the folder's father-folder id, if you want to get a top-level folder in nrecycle bin, father-folder id should be 0
+          required: true
+          type: integer
+        - name: id
+          in: body
+          schema:
+            required:
+              - id
+              - kind
+            properties:
+              id:
+                type: integer
+                description: id of file or folder
+              kind:
+                type: integer
+                description: 1==file 2==folder
+      responses:
+        200:
+          description: successfully
+        401:  
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+
+  # /project/{pid}/file/{fiid}/{toid}/:
+  #   put:
+  #     tags:
+  #       - file
+  #     summary: API for move file or md
+  #     description: move file or md 
+  #     parameters:
+  #       - in: path
+  #         name: pid
+  #         required: true
+  #         type: integer
+  #         description: the project id
+  #       - in: path
+  #         name: fiid
+  #         required: true
+  #         type: integer
+  #         description: the id of file or md you wnat to move
+  #       - in: path
+  #         name: toid
+  #         required: true
+  #         type: integer
+  #         description: the id of the file or md you want to move to, and if you want to move file or md to top-level folder, toid need to be 0
+  #     responses:
+  #       200:
+  #         description: remove it
+  #       401:
+  #         description: forbidden
+  #       403:
+  #         description: method not allowed
+  #       500:
+  #         description: server error
+  #     security:
+  #     - token: []
+
   /message/list/:
     get:
       tags:
@@ -1429,7 +2025,7 @@ paths:
               intro:
                 type: string
       responses:
-        200:
+        201:
           description: OK
         401:
           description: verify failed
@@ -1591,7 +2187,7 @@ paths:
               name:
                 type: string
       responses:
-        200:
+        201:
           description: edit successfully
         401:
           description: verify failed

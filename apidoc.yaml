@@ -627,7 +627,7 @@ paths:
           description: feed add successfully
       security:
       - token: []
-  /feed/list/:
+  /feed/list/{page}/:
     get:
       tags:
         - feed
@@ -662,6 +662,7 @@ paths:
                 - divider
                 - divider_id
                 - divider_name
+                - page
               properties:
                 time_d:
                   type: string
@@ -683,6 +684,8 @@ paths:
                   type: integer
                 divider_name:
                   type: string
+                page:
+                  type: integer
       security:
       - token: []
   /project/{pid}/file/{fid}/comment/{cid}/:

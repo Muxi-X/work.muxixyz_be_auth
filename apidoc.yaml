@@ -188,12 +188,31 @@ paths:
           description: verify failed
       security:
       - token: []
+  /group/{gid}/:
+    delete:
+      tags:
+        - management
+      summary: delete a group
+      description: DANGER:must be superuser can delete a group
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: gid
+          description: groupID
+          required: true
+          type: integer
+      response:
+        200:
+          description: OK
+        401:
+          description: verify failed    
   /group/{gid}/userList/:
     get:
       tags:
         - management
       summary: group user list
-      description: get a user list by group id 
+      description: get a user list by group id/ if gid ==0 ,get all users 
       produces:
         - application/json
       parameters:
@@ -248,7 +267,7 @@ paths:
       tags:
         - management
       summary: get a group list
-      description: verify token and get a list
+      description: verify token and get a list/all group list
       produces:
         - application/json
       responses:
@@ -355,7 +374,7 @@ paths:
       tags:
         - management
       summary: get a project list
-      description: verify token and get a list
+      description: verify token and get a list/ if you are admin or superuser, get all projetc list
       produces:
         - application/json
       parameters:

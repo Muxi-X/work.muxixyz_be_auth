@@ -599,7 +599,7 @@ paths:
       tags:
         - feed
       summary: Add the events in the exchange
-      description: KIND[1]process[2]file[3]comments[4]team. Create a events and send it to the exchange, and queue
+      description: KIND[0]status[1]project[2]doc[3]comments[4]team[5]user[6]file. Create a events and send it to the exchange, and queue
       consumes:
         - application/json
       produces:
@@ -632,7 +632,7 @@ paths:
       tags:
         - feed
       summary: API for getting a list of feeds
-      description: Use mq's receive service to get feed from different queue.
+      description:KIND[0]status[1]project[2]doc[3]comments[4]team[5]user[6]file. get feed list. divider_id[0]status[1-n]projectid
       produces:
         - application/json
       parameters:
@@ -652,22 +652,37 @@ paths:
             type: array
             items:
               required:
-                - creator
-                - time
+                - time_d
+                - time_s
+                - avatar_url
+                - uid
                 - action
                 - kind
                 - sourceID
+                - divider
+                - divider_id
+                - divider_name
               properties:
-                creator:
+                time_d:
                   type: string
-                time:
+                time_s:
                   type: string
+                avatar_url:
+                  type: string
+                uid:
+                  type: integer
                 action:
                   type: string
                 kind:
                   type: integer
                 sourceID:
                   type: integer
+                divider:
+                  type: boolean
+                divider_id:
+                  type: integer
+                divider_name:
+                  type: string
       security:
       - token: []
   /project/{pid}/file/{fid}/comment/{cid}/:

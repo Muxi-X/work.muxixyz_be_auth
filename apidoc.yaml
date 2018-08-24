@@ -1132,7 +1132,7 @@ paths:
           type: integer
         - in: path
           name: foid
-          description: the folder's father-folder id, if you want to edit a top-level folder, father-folder id should be 0
+          description: the id of folder
           required: true
           type: integer
         - name: PUTdata
@@ -1210,9 +1210,15 @@ paths:
               - filername
               - kind
             properties:
-              foldername:
+              file:
+                type: text/plain
+                description: you should give a content or a file, but not both
+              content:
                 type: string
-                description: the name you will use for new folder
+                description: you should give a content or a file, but not both
+              filername:
+                type: string
+                description: the name you will use for new file
               kind:
                 type: boolean
                 description: false==file   true==md

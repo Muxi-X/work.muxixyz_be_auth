@@ -1209,7 +1209,7 @@ paths:
           description: verify failed
       security:
       - token: []
-  /status/{uid}/list/:
+  /status/{uid}/list/{page}/:
     get:
       tags:
         - status
@@ -1222,6 +1222,11 @@ paths:
           name: uid
           description: userid
           required: true
+          type: integer
+        - in: path
+          name: page
+          description: page
+          required: True
           type: integer
       responses:
         200:

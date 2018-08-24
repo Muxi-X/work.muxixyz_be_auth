@@ -1219,7 +1219,7 @@ paths:
           description: userid
           required: true
           type: integer
-       responses:
+      responses:
         200:
           description: OK
 #          headers:

@@ -1231,29 +1231,31 @@ paths:
           description: if this file is not md, you will download it without return data
           schema:
             required:
-              - mdlist
+              - name
+              - content
+              - lasteditor
+              - creator
+              - url
+              - kind
             properties:
-              fList:
-                type: array
-                items:
-                  required:
-                    - name
-                    - content
-                    - lasteditor
-                    - creator
-                  properties:
-                    name: 
-                      type: string
-                      description: the name of file or folder
-                    content:
-                      type: string
-                      description: the content of this md
-                    finalleditor:
-                      type: string
-                      description: the lasteditor of this md
-                    creator:
-                      type: string
-                      description: the creator of this md
+              name: 
+                type: string
+                description: the name of file or folder
+              content:
+                type: string
+                description: the content of this md
+              finalleditor:
+                type: string
+                description: the lasteditor of this md
+              creator:
+                type: string
+                description: the creator of this md
+              url:
+                type: string
+                description: download url for file
+              kind:
+                type: boolean
+                description: flask == file   true == md
         401:
           description: forbidden
         403:
@@ -1266,7 +1268,7 @@ paths:
       tags:
         - file
       summary: the API to edit md's conetnt
-      description: if this file if md you can edit md and change name, else you can only change name of file, and conetnt could be empty
+      description: edit md's conetnt
       parameters:
         - in: path
           name: pid
@@ -1288,10 +1290,10 @@ paths:
               - foldername
               - conetnt
             properties:
-              foldername:
+              filename:
                 type: string
-                description: the name which you will user
-              conetnt:
+                description: the name which you will use
+              content:
                 type: string
                 description: the new content of md, PS in method of get you will get all content and when you use method put you shuld give me all content rather than the content you add just now
       responses:
@@ -1379,7 +1381,7 @@ paths:
           description: server error
       security:
       - token: []
-  /project/{pid}/re/{rid}/:
+  /project/{pid}/re/:
     get:
       tags: 
         - file
@@ -1391,21 +1393,35 @@ paths:
           description: the nrecycle bin's project id
           required: true
           type: integer
-        - in: path
-          name: rid
-          description: the folder's father-folder id, if you want to get a top-level folder in nrecycle bin, father-folder id should be 0
-          required: true
-          type: integer
       responses:
         200:
           description: get it
           schema:
             required:
               - fList
+              - mList
             properties:
               fList:
                 type: array
                 description: folder of file or file
+                items:
+                  required:
+                    - kind
+                    - id
+                    - name
+                  properties:
+                    kind:
+                      type: integer
+                      description: 1 == file   2 == folder
+                    id:
+                      type: integer
+                      description: the id of file or folder
+                    name: 
+                      type: string
+                      description: the name of file or folder
+              mList:
+                type: array
+                description: folder of md or md
                 items:
                   required:
                     - kind
@@ -1440,9 +1456,39 @@ paths:
           description: the nrecycle bin's project id
           required: true
           type: integer
+        - name: id
+          in: body
+          schema:
+            required:
+              - id
+              - kind
+            properties:
+              id:
+                type: integer
+                description: id of file or folder
+              kind:
+                type: integer
+                description: 1==file 2==folder
+      responses:
+        200:
+          description: successfully
+        401:  
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+    post:
+      tags: 
+        - file
+      summary: put the file or folder to the re
+      description: put back the folder or file to the re
+      parameters:
         - in: path
-          name: rid
-          description: the folder's father-folder id, if you want to get a top-level folder in nrecycle bin, father-folder id should be 0
+          name: pid
+          description: the nrecycle bin's project id
           required: true
           type: integer
         - name: id

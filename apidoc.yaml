@@ -1090,6 +1090,7 @@ paths:
             required:
               - title
               - content
+              - avatar
               - time
               - likeCount
               - commentCount
@@ -1100,6 +1101,8 @@ paths:
               title:
                 type: string
               content:
+                type: string
+              avatar:
                 type: string
               time:
                 type: string
@@ -1150,7 +1153,7 @@ paths:
           description: verify failed
       security:
       - token: []
-  /status/list/:
+  /status/list/{page}/:
     get:
       tags:
         - status
@@ -1212,16 +1215,11 @@ paths:
         - application/json
       parameters:
         - in: path
-          name: page
-          description: page number
-          required: true
-          type: integer
-        - in: path
           name: uid
-          description: user ID
+          description: userid
           required: true
           type: integer
-      responses:
+       responses:
         200:
           description: OK
 #          headers:

@@ -1177,7 +1177,10 @@ paths:
           schema:
             required:
               - statuList
+              - page
             properties:
+              page:
+                type: integer
               statuList:
                 type: array
                 items:
@@ -1201,6 +1204,7 @@ paths:
                       type: integer
                     commentCount:
                       type: integer
+                  
         401:
           description: verify failed
       security:

@@ -205,7 +205,7 @@ paths:
           description: groupID
           required: true
           type: integer
-      response:
+      responses:
         200:
           description: OK
         401:
@@ -1202,7 +1202,9 @@ paths:
           type: integer
         - in: path
           name: fid
+          required: true
           description: the value of fid is 0, which is certain
+          type: integer
         - name: POSTdata
           in: body
           schema:
@@ -1211,7 +1213,7 @@ paths:
               - kind
             properties:
               file:
-                type: text/plain
+                type: string
                 description: you should give a content or a file, but not both
               content:
                 type: string
@@ -1251,7 +1253,9 @@ paths:
           type: integer
         - in: path
           name: fid
+          required: true
           description: the id of md you want to edit or the id of file you want to download
+          type: integer
       responses:
         200:
           description: if this file is not md, you will download it without return data
@@ -1306,7 +1310,9 @@ paths:
           type: integer
         - in: path
           name: fid
+          required: true
           description: id of file or md
+          type: integer
         - name: PUTdata
           in: body
           schema:
@@ -1349,7 +1355,9 @@ paths:
           type: integer
         - in: path
           name: fid
+          required: true
           description: the id of file
+          type: integer
       responses:
         200:
           description: delete it 
@@ -1688,11 +1696,13 @@ paths:
             properties:
               fileID:
                 type: integer
-      response:
+      responses:
         200:
           description: OK
         401:
           description: verify failed  
+      security:
+      - token: []
   /status/new/:
     post:
       tags:

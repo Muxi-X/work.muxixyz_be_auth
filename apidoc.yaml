@@ -913,7 +913,6 @@ paths:
               - receiver
               - maker
               - action
-              - kind
               - sourceID
             properties:
               receiver:
@@ -922,8 +921,6 @@ paths:
                 type: string
               action:
                 type: string
-              kind:
-                type: integer
               sourceID:
                 type: integer
       responses:

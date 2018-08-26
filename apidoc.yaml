@@ -1600,11 +1600,6 @@ paths:
       produces:
         - application/json
       parameters:
-        - in: path
-          name: page
-          description: default=1
-          required: true
-          type: integer
         - name: POSTdata
           in: body
           description: username

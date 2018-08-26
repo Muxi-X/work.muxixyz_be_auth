@@ -1695,7 +1695,9 @@ paths:
         200:
           description: OK
         401:
-          description: verify failed  
+          description: verify failed 
+        402:
+          description: file not found!
       security:
       - token: []
   /status/new/:

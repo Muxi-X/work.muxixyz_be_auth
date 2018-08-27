@@ -1370,11 +1370,14 @@ paths:
                 type: array
                 items:
                   required:
+                    - cid
                     - username
                     - avatar
                     - time
                     - content
                   properties:
+                    cid:
+                      type: integer
                     username:
                       type: string
                     avatar:

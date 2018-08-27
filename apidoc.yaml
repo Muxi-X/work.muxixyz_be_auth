@@ -636,6 +636,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: page
           description: page to get
@@ -1050,6 +1051,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - name: POSTdata
           in: body
           description: content and title
@@ -1078,6 +1080,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: statu ID
@@ -1144,6 +1147,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: status ID
@@ -1165,6 +1169,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: page
           description: page number
@@ -1227,6 +1232,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: uid
           description: userid
@@ -1284,6 +1290,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: statu ID
@@ -1310,6 +1317,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: cid
           description: comment id
@@ -1352,6 +1360,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: cid
           description: comment id
@@ -1380,6 +1389,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: statu ID
@@ -1437,6 +1447,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: status ID
@@ -1958,3 +1969,10 @@ definitions:
       comment_id:
         type: integer
         description: if from comment
+parameters:
+  token:
+    name: token
+    in: header
+    description: token to verify admin
+    required: true
+    type: string

@@ -1186,7 +1186,10 @@ paths:
             required:
               - statuList
               - page
+              - count
             properties:
+              cout:
+                type: integer
               page:
                 type: integer
               statuList:
@@ -1246,14 +1249,16 @@ paths:
       responses:
         200:
           description: OK
-#          headers:
-#            links:
-#              type: string
-#              description: next page & last page url
           schema:
             required:
               - statuList
+              - page
+              - count
             properties:
+              count:
+                type: integer
+              page:
+                type: integer
               statuList:
                 type: array
                 items:

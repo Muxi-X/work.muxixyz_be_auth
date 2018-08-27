@@ -1562,28 +1562,29 @@ paths:
               type: string
               description: next page & last page url
           schema:
-            type: array
-            items:
-              required:
-                - sourceID
-                - fromName
-                - fromAvatar
-                - time
-                - sourceKind
-                - readed
-              properties:
-                sourceID:
-                  type: integer
-                fromName:
-                  type: string
-                fromAvatar:
-                  type: string
-                time:
-                  type: string
-                sourceKind:
-                  type: integer
-                readed:
-                  type: boolean
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - sourceID
+                    - fromName
+                    - fromAvatar
+                    - time
+                    - readed
+                  properties:
+                    sourceID:
+                      type: integer
+                    fromName:
+                      type: string
+                    fromAvatar:
+                      type: string
+                    time:
+                      type: string
+                    readed:
+                      type: boolean
       security:
       - token: []
   /message/readAll/:
@@ -1645,7 +1646,6 @@ paths:
               - fromName
               - time
               - action
-              - sourceKind
               - sourceID
             properties:
               msgID:
@@ -1656,8 +1656,6 @@ paths:
                 type: string
               action:
                 type: string
-              sourceKind:
-                type: integer
               sourceID:
                 type: integer
         401:

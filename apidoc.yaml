@@ -1093,6 +1093,7 @@ paths:
               - avatar
               - time
               - likeCount
+              - iflike
               - commentCount
               - userID
               - username
@@ -1108,6 +1109,8 @@ paths:
                 type: string
               likeCount:
                 type: integer
+              iflike:
+                type: integer 
               commentCount:
                 type: integer
               userID:
@@ -1191,6 +1194,7 @@ paths:
                     - avatar
                     - content
                     - likeCount
+                    - iflike
                     - commentCount
                   properties:
                     sid:
@@ -1204,6 +1208,8 @@ paths:
                     content:
                       type: string
                     likeCount:
+                      type: integer
+                    iflike:
                       type: integer
                     commentCount:
                       type: integer
@@ -1250,6 +1256,7 @@ paths:
                     - time
                     - content
                     - likeCount
+                    - iflike
                     - commentCount
                   properties:
                     sid:
@@ -1260,12 +1267,40 @@ paths:
                       type: string
                     likeCount:
                       type: integer
+                    iflike:
+                      type: integer
                     commentCount:
                       type: integer
         401:
           description: verify failed
       security:
       - token: []
+  /status/{sid}/like/:
+    put:
+      tags:
+        - status
+      summary: edit the like numbers
+      description:  edit the like numbers
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: sid
+          description: statu ID
+          required: true
+          type: integer
+        - in: body
+          name: iflike
+          description: 0-nolike, 1-like
+          schema:
+            required: 
+              - iflike
+            properties:
+              iflike:
+                type: integer
+      responses:
+        200:
+          description: OK
   /status/{sid}/comment/{cid}/:
     get:
       tags:

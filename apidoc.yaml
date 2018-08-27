@@ -1185,6 +1185,7 @@ paths:
                 type: array
                 items:
                   required:
+                    - sid
                     - username
                     - time
                     - avatar
@@ -1192,6 +1193,8 @@ paths:
                     - likeCount
                     - commentCount
                   properties:
+                    sid:
+                      type: integer
                     username:
                       type: string
                     time:
@@ -1243,11 +1246,14 @@ paths:
                 type: array
                 items:
                   required:
+                    - sid
                     - time
                     - content
                     - likeCount
                     - commentCount
                   properties:
+                    sid:
+                      type: integer
                     time:
                       type: string
                     content:

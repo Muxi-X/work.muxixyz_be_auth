@@ -251,7 +251,8 @@ paths:
                   required:
                     - username
                     - userID
-#                    - groupName
+                    - groupName
+                    - avatar
                     - role
                     - email
                   properties:
@@ -259,11 +260,13 @@ paths:
                       type: string
                     userID:
                       type: integer
-#                    groupName:
-#                      type: string
+                    groupName:
+                      type: string
                     role:
                       type: integer
                     email:
+                      type: string
+                    avatar:
                       type: string
       security:
       - token: []
@@ -1689,9 +1692,12 @@ paths:
                   required:
                     - fileName
                     - projectName
+                    - username
                     - date
                   properties:
                     filename:
+                      type: string
+                    username:
                       type: string
                     projectName:
                       type: string

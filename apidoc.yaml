@@ -1618,7 +1618,7 @@ paths:
           description: verify failed
       security:
       - token: []
-  /message/{username}/{mid}/:
+  /message/{uid}/{mid}/:
     get:
       tags:
         - message
@@ -1633,10 +1633,10 @@ paths:
           required: true
           type: integer
         - in: path
-          name: username
+          name: uid
           description: user's name to find user and verify
           required: true
-          type: string
+          type: integer
       responses:
         200:
           description: OK

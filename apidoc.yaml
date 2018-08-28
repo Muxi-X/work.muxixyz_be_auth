@@ -1091,6 +1091,7 @@ paths:
           description: OK
           schema:
             required:
+              - sid
               - title
               - content
               - avatar
@@ -1102,6 +1103,8 @@ paths:
               - username
               - commentList
             properties:
+              sid:
+                type: integer
               title:
                 type: string
               content:

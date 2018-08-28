@@ -300,7 +300,44 @@ paths:
                     userCount:
                       type: integer
       security:
-      - token: []            
+      - token: []  
+
+  /group/{gid}/manageUser:
+    post:
+      tags:
+        - management
+      summary: change group members by list
+      description: get a list of userID and change it
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: gid
+          description: groupID
+          required: true
+          type: integer
+        - in: body
+          name: POSTdata
+          description: userID List
+          schema:
+            required:
+              - userList
+            properties:
+              userList:
+                type: array
+                items:
+                  required:
+                    - userID
+                  properties:
+                    userID:
+                      type: integer
+      responses:
+        200:
+          description: OK
+      security:
+      - token: []  
   /project/{pid}/userList/:
     get:
       tags:

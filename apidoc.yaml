@@ -36,6 +36,9 @@ tags:
 
   - name: status
     description: 进度服务
+    
+  - name: share
+    description: 分享服务
 
 ### tag end ###
 
@@ -1690,6 +1693,67 @@ paths:
 
 
 ########
+/share/{docid}/:
+    get:
+      tags:
+        - share
+      summary: get an share url for an doc
+      description: get an share url for an doc
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/token"
+        - in: path
+          name: docid
+          description: doc ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - url
+            properties:
+              url:
+                type: string
+      security:
+      - token: []
+/share/viewdoc/{url}/:
+    get:
+      tag:
+        - share
+      summary: get an share url for an doc
+      description: get an share url for an doc
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: url
+          description: share url for the doc
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - docname
+              - content
+              - finaleditor
+              - creator
+            properties:
+              docname:
+                type: string
+              content:
+                type: string
+              finaleditor:
+                type: string
+              creator:
+                type: integer
+      security:
+      - token: []
+        
 
 # DEFINITIONS
 definitions:

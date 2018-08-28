@@ -1618,7 +1618,7 @@ paths:
           description: verify failed
       security:
       - token: []
-  /message/{uid}/{mid}/:
+  /message/{username}/{mid}/:
     get:
       tags:
         - message
@@ -1633,10 +1633,10 @@ paths:
           required: true
           type: integer
         - in: path
-          name: uid
+          name: username
           description: user's name to find user and verify
           required: true
-          type: integer
+          type: string
       responses:
         200:
           description: OK
@@ -1667,6 +1667,36 @@ paths:
       security:
       - token: []
   /user/attention/:
+    get:
+      tags:
+        - message
+      summary: get a list of user attenting file
+      description: receive a token and return a list of file
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - fileName
+                    - projectName
+                    - date
+                  properties:
+                    filename:
+                      type: string
+                    projectName:
+                      type: string
+                    date:
+                      type: string
     post:
       tags:
         - message

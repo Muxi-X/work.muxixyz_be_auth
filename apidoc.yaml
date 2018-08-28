@@ -1613,7 +1613,7 @@ paths:
           type: integer
       responses:
         200:
-          description: OK
+          description: OK
           schema:
             required:
               - intro
@@ -1721,7 +1721,7 @@ paths:
       - token: []
 /share/viewdoc/{url}/:
     get:
-      tag:
+      tags:
         - share
       summary: get an share url for an doc
       description: get an share url for an doc

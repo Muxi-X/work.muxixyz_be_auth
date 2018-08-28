@@ -1094,11 +1094,9 @@ paths:
               - sid
               - title
               - content
-              - avatar
               - time
               - likeCount
               - iflike
-              - commentCount
               - userID
               - username
               - commentList
@@ -1109,16 +1107,12 @@ paths:
                 type: string
               content:
                 type: string
-              avatar:
-                type: string
               time:
                 type: string
               likeCount:
                 type: integer
               iflike:
                 type: integer 
-              commentCount:
-                type: integer
               userID:
                 type: integer
               username:

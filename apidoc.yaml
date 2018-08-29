@@ -1124,11 +1124,14 @@ paths:
                 type: array
                 items:
                   required:
+                    - cid
                     - username
                     - avatar
                     - time
                     - content
                   properties:
+                    cid: 
+                      type: integer
                     username:
                       type: string
                     avatar:
@@ -1344,49 +1347,6 @@ paths:
         200:
           description: OK
   /status/{sid}/comment/{cid}/:
-    get:
-      tags:
-        - status
-      summary: get information of a comment by id
-      description: get username,avatar,time,including
-      produces:
-        - application/json
-      parameters:
-        - $ref: "#/parameters/token"
-        - in: path
-          name: cid
-          description: comment id
-          required: true
-          type: integer
-        - in: path
-          name: sid
-          description: statu ID
-          required: true
-          type: integer
-      responses:
-        200:
-          description: OK
-          schema:
-            required:
-              - username
-              - avatar
-              - time
-              - content
-            properties:
-              useranme:
-                type: string
-              avatar:
-                type: string
-              time:
-                type: string
-              content:
-                type: string
-        401:
-          description: verify failed
-        402:
-          description: can't find comment
-      security:
-      - token: []
     delete:
       tags:
         - status
@@ -1416,62 +1376,6 @@ paths:
       security:
       - token: []
   /status/{sid}/comments/:
-    get:
-      tags:
-        - status
-      summary: get a list of statu
-      description: get
-      produces:
-        - application/json
-      parameters:
-        - $ref: "#/parameters/token"
-        - in: path
-          name: sid
-          description: statu ID
-          required: true
-          type: integer
-        - in: path
-          name: page
-          description: default=1
-          required: true
-          type: integer
-      responses:
-        200:
-          description: OK
-          headers:
-            links:
-              type: string
-              description: next page & last page url
-          schema:
-            required:
-              - commentList
-            properties:
-              commentList:
-                type: array
-                items:
-                  required:
-                    - cid
-                    - username
-                    - avatar
-                    - time
-                    - content
-                  properties:
-                    cid:
-                      type: integer
-                    username:
-                      type: string
-                    avatar:
-                      type: string
-                    time:
-                      type: string
-                    content:
-                      type: string
-        401:
-          description: verify failed
-        402:
-          description: statu not found
-      security:
-      - token: []
     post:
       tags:
         - status

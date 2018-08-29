@@ -559,7 +559,7 @@ paths:
               - luckydog
             properties:
               luckydog:
-                type: string
+                type: integer
       responses:
         200:
           description: luckydog be a admin

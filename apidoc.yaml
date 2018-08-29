@@ -1153,18 +1153,20 @@ paths:
           description: status ID
           required: true
           type: integer
+        - in: body
+          name: POSTdata
+          schema:
+            required:
+              - content
+              - title
+            properties:
+              content:
+                type: string
+              title:
+                type: string
       responses:
         200:
           description: OK
-          schema:
-            required:
-              - title
-              - content
-            properties:
-              title:
-                type: string
-              content:
-                type: string
       security:
       - token: []
     delete:

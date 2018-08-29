@@ -1139,6 +1139,34 @@ paths:
                       type: string
       security:
       - token: []
+    put:
+      tags:
+        - status
+      summary: edit a statu
+      description: edit a statu
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/token"
+        - in: path
+          name: sid
+          description: status ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - title
+              - content
+            properties:
+              title:
+                type: string
+              content:
+                type: string
+      security:
+      - token: []
     delete:
       tags:
         - status

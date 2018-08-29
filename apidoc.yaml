@@ -510,6 +510,36 @@ paths:
           description: user already be a member
       security:
       - token: []
+  /user/admins/:
+    get:
+      tags:
+        - management
+      summary: get a list of admin
+      description: verify token and get a list of admin
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - userID
+                    - userName
+                  properties:
+                    userID:
+                      type: integer
+                    userName:
+                      type: string
+        201:
+          description: No one is admin
   /user/addAdmin/:
     post:
       tags:

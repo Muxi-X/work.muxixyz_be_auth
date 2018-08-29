@@ -445,6 +445,7 @@ paths:
                     - projectID
                     - projectName
                     - userCount
+                    - intro
                   properties:
                     projectID:
                       type: integer
@@ -452,6 +453,8 @@ paths:
                       type: string
                     userCount:
                       type: integer
+                    intro:
+                      type: string
       security:
       - token: []
   /user/{uid}:
@@ -682,6 +685,40 @@ paths:
           description: verify failed
       security:
       - token: []
+      
+  /team/applyList/:
+    get:
+      tags:
+        - management
+      summary: get a list of who want join the "club"
+      description: receive a token, verify it and return list
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - userID
+                    - userName
+                    - avatar
+                  properties:
+                    userID:
+                      type: integer
+                    userName:
+                      type: string
+                    avatar:
+                      type: string
+      
+      
   /feed/new/:
     post:
       tags:

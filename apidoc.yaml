@@ -1627,7 +1627,7 @@ paths:
 
 
 ########
-/share/{docid}/:
+  /share/{docid}/:
     get:
       tags:
         - share
@@ -1653,7 +1653,7 @@ paths:
                 type: string
       security:
       - token: []
-/share/viewdoc/{url}/:
+  /share/viewdoc/{url}/:
     get:
       tags:
         - share

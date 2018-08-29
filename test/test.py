@@ -32,9 +32,9 @@ class BasicTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         db.create_all()
 
-#    def tearDown(self):
-#        db.session.remove()
-#        db.drop_all()
+    def test_z_tearDown(self):
+        db.session.remove()
+        db.drop_all()
 #        db.create_all()
 #        self.app_context.pop()
 

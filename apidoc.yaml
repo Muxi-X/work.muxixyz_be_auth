@@ -36,6 +36,9 @@ tags:
 
   - name: status
     description: 进度服务
+    
+  - name: share
+    description: 分享服务
 
   - name: file
     description: 文件服务
@@ -778,7 +781,7 @@ paths:
       tags:
         - feed
       summary: Add the events in the exchange
-      description: KIND[1]process[2]file[3]comments[4]team. Create a events and send it to the exchange, and queue
+      description: KIND[0]status[1]project[2]doc[3]comments[4]team[5]user[6]file. Create a events and send it to the exchange, and queue
       consumes:
         - application/json
       produces:
@@ -806,15 +809,16 @@ paths:
           description: feed add successfully
       security:
       - token: []
-  /feed/list/:
+  /feed/list/{page}/:
     get:
       tags:
         - feed
       summary: API for getting a list of feeds
-      description: Use mq's receive service to get feed from different queue.
+      description: KIND[0]status[1]project[2]doc[3]comments[4]team[5]user[6]file.get feed list.divider_id[0]status[1-n]projectid
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: page
           description: page to get
@@ -831,21 +835,39 @@ paths:
             type: array
             items:
               required:
-                - creator
-                - time
+                - time_d
+                - time_s
+                - avatar_url
+                - uid
                 - action
                 - kind
                 - sourceID
+                - divider
+                - divider_id
+                - divider_name
+                - page
               properties:
-                creator:
+                time_d:
                   type: string
-                time:
+                time_s:
                   type: string
+                avatar_url:
+                  type: string
+                uid:
+                  type: integer
                 action:
                   type: string
                 kind:
                   type: integer
                 sourceID:
+                  type: integer
+                divider:
+                  type: boolean
+                divider_id:
+                  type: integer
+                divider_name:
+                  type: string
+                page:
                   type: integer
       security:
       - token: []
@@ -1870,6 +1892,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - name: POSTdata
           in: body
           description: content and title
@@ -1898,6 +1921,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: statu ID
@@ -1908,15 +1932,18 @@ paths:
           description: OK
           schema:
             required:
+              - sid
               - title
               - content
               - time
               - likeCount
-              - commentCount
+              - iflike
               - userID
               - username
               - commentList
             properties:
+              sid:
+                type: integer
               title:
                 type: string
               content:
@@ -1925,8 +1952,8 @@ paths:
                 type: string
               likeCount:
                 type: integer
-              commentCount:
-                type: integer
+              iflike:
+                type: integer 
               userID:
                 type: integer
               username:
@@ -1935,11 +1962,14 @@ paths:
                 type: array
                 items:
                   required:
+                    - cid
                     - username
                     - avatar
                     - time
                     - content
                   properties:
+                    cid: 
+                      type: integer
                     username:
                       type: string
                     avatar:
@@ -1950,6 +1980,36 @@ paths:
                       type: string
       security:
       - token: []
+    put:
+      tags:
+        - status
+      summary: edit a statu
+      description: edit a statu
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/token"
+        - in: path
+          name: sid
+          description: status ID
+          required: true
+          type: integer
+        - in: body
+          name: POSTdata
+          schema:
+            required:
+              - content
+              - title
+            properties:
+              content:
+                type: string
+              title:
+                type: string
+      responses:
+        200:
+          description: OK
+      security:
+      - token: []
     delete:
       tags:
         - status
@@ -1958,6 +2018,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: status ID
@@ -1970,7 +2031,7 @@ paths:
           description: verify failed
       security:
       - token: []
-  /status/list/:
+  /status/list/{page}/:
     get:
       tags:
         - status
@@ -1979,6 +2040,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: page
           description: page number
@@ -1994,18 +2056,28 @@ paths:
           schema:
             required:
               - statuList
+              - page
+              - count
             properties:
+              cout:
+                type: integer
+              page:
+                type: integer
               statuList:
                 type: array
                 items:
                   required:
+                    - sid
                     - username
                     - time
                     - avatar
                     - content
                     - likeCount
+                    - iflike
                     - commentCount
                   properties:
+                    sid:
+                      type: integer
                     username:
                       type: string
                     time:
@@ -2016,13 +2088,16 @@ paths:
                       type: string
                     likeCount:
                       type: integer
+                    iflike:
+                      type: integer
                     commentCount:
                       type: integer
+                  
         401:
           description: verify failed
       security:
       - token: []
-  /status/{uid}/list/:
+  /status/{uid}/list/{page}/:
     get:
       tags:
         - status
@@ -2031,41 +2106,50 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
-          name: page
-          description: page number
+          name: uid
+          description: userid
           required: true
           type: integer
         - in: path
-          name: uid
-          description: user ID
-          required: true
+          name: page
+          description: page
+          required: True
           type: integer
       responses:
         200:
           description: OK
-#          headers:
-#            links:
-#              type: string
-#              description: next page & last page url
           schema:
             required:
               - statuList
+              - page
+              - count
             properties:
+              count:
+                type: integer
+              page:
+                type: integer
               statuList:
                 type: array
                 items:
                   required:
+                    - sid
                     - time
                     - content
                     - likeCount
+                    - iflike
                     - commentCount
                   properties:
+                    sid:
+                      type: integer
                     time:
                       type: string
                     content:
                       type: string
                     likeCount:
+                      type: integer
+                    iflike:
                       type: integer
                     commentCount:
                       type: integer
@@ -2073,49 +2157,34 @@ paths:
           description: verify failed
       security:
       - token: []
-  /status/{sid}/comment/{cid}/:
-    get:
+  /status/{sid}/like/:
+    put:
       tags:
         - status
-      summary: get information of a comment by id
-      description: get username,avatar,time,including
+      summary: edit the like numbers
+      description:  edit the like numbers
       produces:
         - application/json
       parameters:
-        - in: path
-          name: cid
-          description: comment id
-          required: true
-          type: integer
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: statu ID
           required: true
           type: integer
+        - in: body
+          name: iflike
+          description: 0-nolike, 1-like
+          schema:
+            required: 
+              - iflike
+            properties:
+              iflike:
+                type: integer
       responses:
         200:
           description: OK
-          schema:
-            required:
-              - username
-              - avatar
-              - time
-              - content
-            properties:
-              useranme:
-                type: string
-              avatar:
-                type: string
-              time:
-                type: string
-              content:
-                type: string
-        401:
-          description: verify failed
-        402:
-          description: can't find comment
-      security:
-      - token: []
+  /status/{sid}/comment/{cid}/:
     delete:
       tags:
         - status
@@ -2124,6 +2193,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: cid
           description: comment id
@@ -2144,58 +2214,6 @@ paths:
       security:
       - token: []
   /status/{sid}/comments/:
-    get:
-      tags:
-        - status
-      summary: get a list of statu
-      description: get
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: sid
-          description: statu ID
-          required: true
-          type: integer
-        - in: path
-          name: page
-          description: default=1
-          required: true
-          type: integer
-      responses:
-        200:
-          description: OK
-          headers:
-            links:
-              type: string
-              description: next page & last page url
-          schema:
-            required:
-              - commentList
-            properties:
-              commentList:
-                type: array
-                items:
-                  required:
-                    - username
-                    - avatar
-                    - time
-                    - content
-                  properties:
-                    username:
-                      type: string
-                    avatar:
-                      type: string
-                    time:
-                      type: string
-                    content:
-                      type: string
-        401:
-          description: verify failed
-        402:
-          description: statu not found
-      security:
-      - token: []
     post:
       tags:
         - status
@@ -2206,6 +2224,7 @@ paths:
       produces:
         - application/json
       parameters:
+        - $ref: "#/parameters/token"
         - in: path
           name: sid
           description: status ID
@@ -2366,7 +2385,7 @@ paths:
           type: integer
       responses:
         200:
-          description: OK
+          description: OK
           schema:
             required:
               - intro
@@ -2446,6 +2465,67 @@ paths:
 
 
 ########
+  /share/{docid}/:
+    get:
+      tags:
+        - share
+      summary: get an share url for an doc
+      description: get an share url for an doc
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/token"
+        - in: path
+          name: docid
+          description: doc ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - url
+            properties:
+              url:
+                type: string
+      security:
+      - token: []
+  /share/viewdoc/{url}/:
+    get:
+      tags:
+        - share
+      summary: get an share url for an doc
+      description: get an share url for an doc
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: url
+          description: share url for the doc
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - docname
+              - content
+              - finaleditor
+              - creator
+            properties:
+              docname:
+                type: string
+              content:
+                type: string
+              finaleditor:
+                type: string
+              creator:
+                type: integer
+      security:
+      - token: []
+        
 
 # DEFINITIONS
 definitions:
@@ -2727,3 +2807,10 @@ definitions:
       comment_id:
         type: integer
         description: if from comment
+parameters:
+  token:
+    name: token
+    in: header
+    description: token to verify admin
+    required: true
+    type: string

@@ -739,13 +739,13 @@ paths:
                   required:
                     - userID
                     - userName
-                    - avatar
+                    - userEmail
                   properties:
                     userID:
                       type: integer
                     userName:
                       type: string
-                    avatar:
+                    userEmail:
                       type: string
         401:
           description: verify failed
@@ -1841,15 +1841,11 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: POSTdata
-          in: body
-          description: fileID
-          schema:
-            required:
-              - fileID
-            properties:
-              fileID:
-                type: integer
+        - in: path
+          name: fileName
+          description: file name
+          reuiqred: true
+          type: string
       responses:
         200:
           description: OK
@@ -1859,6 +1855,32 @@ paths:
           description: file not found!
       security:
       - token: []
+    delete:
+      tags:
+        - message
+      summary: post a filename and delete it
+      description: find FILE in database and delete attention
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: filename
+          schema:
+            required:
+              - fileName
+            properties:
+              fileName:
+                type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+        403:
+          description: file not exist!
   /status/new/:
     post:
       tags:

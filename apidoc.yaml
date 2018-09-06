@@ -1547,7 +1547,7 @@ paths:
           type: integer
       responses:
         200:
-          description: OK
+          description: OK
           schema:
             required:
               - intro

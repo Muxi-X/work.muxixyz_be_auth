@@ -7,7 +7,7 @@ from work_muxixyz_app.models import Team,Group,User,Project,Message,Statu,File,C
 from flask_script import Manager,Shell,Command
 from flask_migrate import Migrate,MigrateCommand
 
-importlib.reload(sys)
+#importlib.reload(sys)
 #export PYTHONIOENCODING="UTF-8"
 
 app=create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -30,4 +30,5 @@ def test():
 
 if __name__=='__main__':
     manager.run()
+    print (app.url_map)
     app.run(debug=True)

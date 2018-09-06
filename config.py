@@ -42,11 +42,11 @@ import os
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
-USERNAME = 'muxitest'
-PASSWORD = 'Muxitest304'
-HOST = 'rm-wz907gsr637s950hmjo.mysql.rds.aliyuncs.com'
-PORT = '3306'
-DATABASE = 'workbenchtest'
+USERNAME = os.getenv("USERNAME")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = 3306
+DATABASE = os.getenv("DBNAME")
 
 class Config:
     SECRET_KEY = 'work.muxixyz'
@@ -62,7 +62,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = \
-        "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(
+        "{}+{}://{}:{}@{}:{}/{}".format(
             DIALECT,
             DRIVER, 
             USERNAME, 
@@ -75,7 +75,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = \
-        "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(
+        "{}+{}://{}:{}@{}:{}/{}".format(
             DIALECT,
             DRIVER, 
             USERNAME, 
@@ -88,7 +88,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = \
-        "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(
+        "{}+{}://{}:{}@{}:{}/{}".format(
             DIALECT,
             DRIVER, 
             USERNAME, 

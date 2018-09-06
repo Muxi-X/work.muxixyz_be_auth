@@ -7,14 +7,15 @@ from ..decorator import login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-@api.route('/auth/signup/', methods = ['POST'])
+@api.route('/auth/signup', methods = ['POST'])
 def signup():
     name = request.get_json().get('name')
     email = request.get_json().get('email')
 #    avatar = request.get_json().get('avatar')
     tel = request.get_json().get('tel')
     usr = User.query.filter_by(name = name).first()
-    if usr is None:
+    usR = User.query.filter_by(email = email).first()
+    if (usr is None) and (usR is None):
         usr = User(
                 name = name, 
                 email = email, 
@@ -36,7 +37,7 @@ def signup():
         response.status_code = 401
         return response
 
-@api.route('/auth/login/', methods = ['POST'])
+@api.route('/auth/login', methods = ['POST'])
 def login():
     usrname = request.get_json().get('username')
     usr = User.query.filter_by(name = usrname).first()

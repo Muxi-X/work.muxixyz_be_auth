@@ -935,7 +935,7 @@ paths:
   /file/filetree/{pid}:
     get:
       tags:
-        - file
+        - project
       summary: API for get the file_tree for a project
       description: get the file_tree for a project
       parameters:
@@ -964,7 +964,7 @@ paths:
       - token: []
     put:
       tags:
-        - file
+        - project
       summary: API for update the filetree
       parameters:
         - in: path
@@ -998,20 +998,20 @@ paths:
     post:
       tags:
         - file
-      summary: API for create a new folder for file
-      description: create a new folder for file
+      summary: API for create a new folder of file
+      description: create a new folder of file
       parameters:
         - name: data
           in: body
           schema:
             required:
               - foldername
-              - pid
+              - project_id
             properties:
               foldername:
                 type: string
-                description: the name you will use for new folder for file
-              pid:
+                description: the name you will use for new folder
+              project_id:
                 type: integer
                 description: which project the folder belong to
       responses:
@@ -1034,7 +1034,7 @@ paths:
       - token: []
       
       
-  /folder/file/{fid}/:    
+  /folder/file/{id}/:    
     put:
       tags:
         - file
@@ -1042,7 +1042,7 @@ paths:
       description:  update the folder's name
       parameters:
         - in: path
-          name: fid
+          name: id
           type: integer
           description: which folder you want to change name
         - name: data
@@ -1072,10 +1072,11 @@ paths:
       description:  delete a folder
       parameters:
         - in: path
-          name: fid
+          name: id
           type: integer
           description: which folder you want to delete
         - name: data
+          description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
           in: body
           schema:
             required:
@@ -1099,17 +1100,16 @@ paths:
           description: server error
       security:
       - token: []
+
+  /folder/file/children/:
     post:
       tags:
         - file
-      summary: API for get a folder for file
-      description: get a folder for file
+      summary: API for get a folder of file
+      description: get a folder of file
       parameters: 
-        - in: path
-          name: fid
-          type: integer
-          description: which folder you want to get
         - name: data
+          description:  详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
           in: body
           schema:
             required:
@@ -1127,10 +1127,10 @@ paths:
           description: get it
           schema:
             required:
-              - foList
-              - filist
+              - FolderList
+              - FileList
             properties:
-              foList:
+              FolderList:
                 type: array
                 description: children folders of this folder
                 items:
@@ -1144,7 +1144,7 @@ paths:
                     name: 
                       type: string
                       description: the name of folder
-              fiList:
+              FileList:
                 type: array
                 description: children files of this folder
                 items:
@@ -1180,24 +1180,24 @@ paths:
       security:
       - token: []
 
-  /folder/md/:
+  /folder/doc/:
     post:
       tags:
         - file
-      summary: API for create a new folder for md
-      description: create a new folder for md
+      summary: API for create a new folder of doc
+      description: create a new folder of doc
       parameters:
         - name: data
           in: body
           schema:
             required:
               - foldername
-              - pid
+              - project_id
             properties:
               foldername:
                 type: string
-                description: the name you will use for new folder for md
-              pid:
+                description: the name you will use for new folder for doc
+              project_id:
                 type: integer
                 description: which project the folder belong to
       responses:
@@ -1220,7 +1220,7 @@ paths:
       - token: []
       
 
-  /folder/md/{mid}/:    
+  /folder/doc/{id}/:    
     put:
       tags:
         - file
@@ -1228,7 +1228,7 @@ paths:
       description:  update the folder's name
       parameters:
         - in: path
-          name: mid
+          name: id
           type: integer
           description: which folder you want to change name
         - name: data
@@ -1258,20 +1258,21 @@ paths:
       description:  delete a folder
       parameters:
         - in: path
-          name: fid
+          name: id
           type: integer
           description: which folder you want to delete
         - name: data
+          description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
           in: body
           schema:
             required:
               - folder
-              - md
+              - doc
             properties:
               folder:
                 type: array
                 description: the children folders' id of this folder
-              md:
+              doc:
                 type: array
                 description: the children files' id of this folder
       responses:
@@ -1296,16 +1297,17 @@ paths:
           type: integer
           description: which folder you want to get
         - name: data
+          description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
           in: body
           schema:
             required:
               - folder
-              - md
+              - doc
             properties:
               folder:
                 type: array
                 description: the children folders' id of this folder
-              md:
+              doc:
                 type: array
                 description: the children files' id of this folder
       responses:
@@ -1313,10 +1315,10 @@ paths:
           description: get it
           schema:
             required:
-              - foList
-              - mdlist
+              - FolderList
+              - DocList
             properties:
-              foList:
+              FolderList:
                 type: array
                 description: children folders of this folder
                 items:
@@ -1330,7 +1332,7 @@ paths:
                     name: 
                       type: string
                       description: the name of folder
-              mdList:
+              DocList:
                 type: array
                 description: children md of this folder
                 items:
@@ -1347,7 +1349,7 @@ paths:
                       description: the name of file
                     lastcontent:
                       type: string
-                      description: last content of this md
+                      description: 最新的内容，可以用来做封面。
         401:  
           description: forbidden
         403:
@@ -1368,12 +1370,12 @@ paths:
           schema:
             required:
               - file
-              - pid
+              - project_id
             properties:
               file:
                 type: text/plain
                 description: the file you want to uploda
-              pid:
+              project_id:
                 type: integer
                 description: which project this file belong to
       responses:
@@ -1395,7 +1397,7 @@ paths:
       security:
       - token: []
 
-  /file/file/{fid}/:
+  /file/file/{id}/:
     # get:
     #   tags:
     #     - file
@@ -1444,7 +1446,7 @@ paths:
       description:  delete a file
       parameters:
         - in: path
-          name: fid
+          name: id
           type: integer
           description: which file you want to delete
       responses:
@@ -1459,20 +1461,20 @@ paths:
       security:
       - token: []
 
-  /file/md/:
+  /file/doc/:
     post:
       tags:
         - file
-      summary: API for create a new md
-      description: create a new md
+      summary: API for create a new doc
+      description: create a new doc
       parameters:
         - name: data
           in: body
           schema:
             required:
-              - mdname
+              - DocName
               - content
-              - pid
+              - project_id
             properties:
               mdname:
                 type: string
@@ -1480,7 +1482,7 @@ paths:
               content:
                 type: string
                 description: the content of this md
-              pid:
+              project_id:
                 type: integer
                 description: which project this md belong to
       responses:
@@ -1502,20 +1504,20 @@ paths:
       security:
       - token: []
 
-  /file/md/{mid}/:
+  /file/doc/{id}/:
     get:
       tags:
         - file
-      summary: get the content of a file
-      description: get the content of a file
+      summary: get the content of a doc
+      description: get the content of a doc
       parameters:
         - in: path
-          name: mid
+          name: id
           type: integer
-          description: the md you want to get
+          description: the doc you want to get
       responses:
         200:
-          description: give the information of this file
+          description: give the information of this doc
           schema:
             required:
               - name
@@ -1526,16 +1528,16 @@ paths:
             properties:
               name: 
                 type: string
-                description: the name of file
+                description: the name of doc
               creator:
                 type: string
-                description: the creator of this file
+                description: the creator of this doc
               conetnt:
                 type: string
-                description: the content of this file
+                description: the content of this doc
               lasteditor:
                 type: string
-                description: the last user who edit this md
+                description: the last user who edit this doc
               create_time:
                 type: string
                 description: the create_time
@@ -1550,13 +1552,13 @@ paths:
     delete:
       tags:
         - file
-      summary: the API for delete a md
-      description:  delete a md
+      summary: the API for delete a doc
+      description:  delete a doc
       parameters:
         - in: path
-          name: mid
+          name: id
           type: integer
-          description: which md you want to delete
+          description: which doc you want to delete
       responses:
         200:
           description: delete
@@ -1571,25 +1573,25 @@ paths:
     put:
       tags:
         - file
-      summary: the API to update md
-      description: update md
+      summary: the API to update doc
+      description: update doc
       parameters:
         - in: path
           name: mid
-          description: id of md
+          description: id of doc
         - name: data
           in: body
           schema:
             required:
-              - foldername
+              - DocName
               - conetnt
             properties:
-              filename:
+              DocName:
                 type: string
                 description: the name which you will use
               content:
                 type: string
-                description: the new content of md
+                description: the new content of doc
       responses:
         200:
           description: change it
@@ -2062,10 +2064,10 @@ paths:
           description: get it
           schema:
             required:
-              - fList
-              - mList
+              - FileList
+              - DocList
             properties:
-              fList:
+              FileList:
                 type: array
                 description: file
                 items:
@@ -2079,7 +2081,7 @@ paths:
                     name: 
                       type: string
                       description: the name of file or folder
-              mList:
+              DocList:
                 type: array
                 description: md
                 items:

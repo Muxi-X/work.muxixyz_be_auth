@@ -631,7 +631,7 @@ paths:
                 type: integer
               feed:
                 type: array
-                item:
+                items:
                   required:
                     - time_d
                     - time_s

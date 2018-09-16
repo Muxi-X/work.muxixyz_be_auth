@@ -718,7 +718,7 @@ paths:
                   type: integer
       security:
       - token: []
-  /project/{pid}/file/{fid}/comment/{cid}/:
+  /project/{pid}/doc/{fid}/comment/{cid}/:
     get:
       tags:
         - project
@@ -798,7 +798,7 @@ paths:
           description: can't find
       security:
       - token: []
-  /project/{pid}/file/{fid}/comments/:
+  /project/{pid}/doc/{fid}/comments/:
     get:
       tags:
         - project
@@ -932,7 +932,7 @@ paths:
       security:
       - token: []
 
-  /file/filetree/{pid}:
+  /folder/filetree/<int:pid>/:
     get:
       tags:
         - project
@@ -993,6 +993,70 @@ paths:
           description: server error
       security:
       - token: []
+
+  /folder/doctree/<int:pid>/:
+    get:
+      tags:
+        - project
+      summary: API for get the doc_tree for a project
+      description: get the doc_tree for a project
+      parameters:
+        - in: path
+          name: pid
+          description: the ID of project
+          required: true
+          type: integer
+      responses:
+        200:
+          description: get it
+          schema:
+            required:
+              - doctree
+            properties:
+              doctree:
+                type: string
+                description: the doctree of this project;
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    put:
+      tags:
+        - project
+      summary: API for update the filetree
+      parameters:
+        - in: path
+          name: pid
+          description: the ID of project
+          required: true
+          type: integer
+        - name: doctree
+          in: body
+          description: the filetree you want to update
+          schema:
+            required:
+              - doctree
+            properties:
+              doctree:
+                type: string
+                description: the filetree you want to update
+      responses:
+        200:
+          description: update
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+
+
 
   /folder/file/:
     post:
@@ -1055,7 +1119,7 @@ paths:
                 type: string
                 description: the name you will change for folder for file
       responses:
-        201:
+        200:
           description: update
         401:
           description: forbidden
@@ -1076,7 +1140,7 @@ paths:
           type: integer
           description: which folder you want to delete
         - name: data
-          description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
+          description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID，当前文件夹的id一起放到folder里边吧。
           in: body
           schema:
             required:

@@ -620,43 +620,50 @@ paths:
               type: string
               description: next page & last page url
           schema:
-            type: array
-            items:
-              required:
-                - time_d
-                - time_s
-                - avatar_url
-                - uid
-                - action
-                - kind
-                - sourceID
-                - divider
-                - divider_id
-                - divider_name
-                - page
-              properties:
-                time_d:
-                  type: string
-                time_s:
-                  type: string
-                avatar_url:
-                  type: string
-                uid:
-                  type: integer
-                action:
-                  type: string
-                kind:
-                  type: integer
-                sourceID:
-                  type: integer
-                divider:
-                  type: boolean
-                divider_id:
-                  type: integer
-                divider_name:
-                  type: string
-                page:
-                  type: integer
+            required:
+              - feed
+              - count 
+              - page
+            properties:
+              count:
+                type: integer
+              page:
+                type: integer
+              feed:
+                type: array
+                item:
+                  required:
+                    - time_d
+                    - time_s
+                    - avatar_url
+                    - uid
+                    - action
+                    - kind
+                    - sourceID
+                    - divider
+                    - divider_id
+                    - divider_name
+                  properties:
+                    time_d:
+                      type: string
+                    time_s:
+                      type: string
+                    avatar_url:
+                      type: string
+                    uid:
+                      type: integer
+                    action:
+                      type: string
+                    kind:
+                      type: integer
+                    sourceID:
+                      type: integer
+                    divider:
+                      type: boolean
+                    divider_id:
+                      type: integer
+                    divider_name:
+                      type: string                   
       security:
       - token: []
   /project/{pid}/file/{fid}/comment/{cid}/:

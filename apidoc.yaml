@@ -597,39 +597,6 @@ paths:
           description: verify failed
       security:
       - token: []
-  /feed/new/:
-    post:
-      tags:
-        - feed
-      summary: Add the events in the exchange
-      description: KIND[0]status[1]project[2]doc[3]comments[4]team[5]user[6]file. Create a events and send it to the exchange, and queue
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: POSTdata
-          in: body
-          description: data to create a event
-          schema:
-            required:
-              - action
-              - kind
-              - sourceID
-            properties:
-              from:
-                type: string
-              action:
-                type: string
-              kind:
-                type: integer
-              sourceID:
-                type: integer
-      responses:
-        200:
-          description: feed add successfully
-      security:
-      - token: []
   /feed/list/{page}/:
     get:
       tags:

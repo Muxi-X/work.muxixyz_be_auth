@@ -2523,7 +2523,22 @@ paths:
                     - projectID
                     - projectName
                     - creator
-                    - time   
+                    - time
+                  properties:
+                    kind:
+                      type: integer
+                    sourceID:
+                      type: integer
+                    recordName:
+                      type: string
+                    projectID:
+                      type: integer
+                    projectName:
+                      type: string
+                    creator:
+                      type: string
+                    time:
+                      type: string
         401:
           description: verify failed
       security:

@@ -39,7 +39,9 @@ tags:
 
   - name: file
     description: 文件服务
-    
+
+  - name: search
+    description: 搜索服务    
 ### tag end ###
 
 ### auth start ###
@@ -2464,7 +2466,59 @@ paths:
 
 # FILE API WRITED BY CGH233
 
-
+  /search/:
+    post:
+      tags:
+        - search
+        summary: Search API
+        description: receive project and pattern
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - name: POSTdata
+            in: body
+            description: include pattern and projectID[projectID == 0 means all]
+            schema:
+              required:
+                - pattern
+                - projectID
+              properties:
+                pattern:
+                  type: string
+                projectID:
+                  type: integer
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - count
+                - pageMax
+                - pageNow
+                - hasNext
+                - list
+              properties:
+                count:
+                  type: integer
+                pageMax:
+                  type: integer
+                pageNow:
+                  type: integer
+                hasNext:
+                  type: bool
+                list:
+                  type: array
+                  items:
+                    required:
+                      - kind
+                      - sourceID
+                      - recordName
+                      - projectID
+                      - projectName
+                      - creator
+                      - time                 
 
 
 ########

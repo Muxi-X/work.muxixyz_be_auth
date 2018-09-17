@@ -1846,7 +1846,7 @@ paths:
         - in: path
           name: fileName
           description: file name
-          reuiqred: true
+          required: true
           type: string
       responses:
         200:
@@ -2470,55 +2470,57 @@ paths:
     post:
       tags:
         - search
-        summary: Search API
-        description: receive project and pattern
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - name: POSTdata
-            in: body
-            description: include pattern and projectID[projectID == 0 means all]
-            schema:
-              required:
-                - pattern
-                - projectID
-              properties:
-                pattern:
-                  type: string
-                projectID:
-                  type: integer
-        responses:
-          200:
-            description: OK
-            schema:
-              required:
-                - count
-                - pageMax
-                - pageNow
-                - hasNext
-                - list
-              properties:
-                count:
-                  type: integer
-                pageMax:
-                  type: integer
-                pageNow:
-                  type: integer
-                hasNext:
-                  type: bool
-                list:
-                  type: array
-                  items:
-                    required:
-                      - kind
-                      - sourceID
-                      - recordName
-                      - projectID
-                      - projectName
-                      - creator
-                      - time                 
+      summary: Search API
+      description: receive project and pattern
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: include pattern and projectID[projectID == 0 means all]
+          schema:
+            required:
+              - pattern
+              - projectID
+            properties:
+              pattern:
+                type: string
+              projectID:
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - count
+              - pageMax
+              - pageNow
+              - hasNext
+              - list
+            properties:
+              count:
+                type: integer
+              pageMax:
+                type: integer
+              pageNow:
+                type: integer
+              hasNext:
+                type: boolean
+              list:
+                type: array
+                items:
+                  required:
+                    - kind
+                    - sourceID
+                    - recordName
+                    - projectID
+                    - projectName
+                    - creator
+                    - time   
+        401:
+          description: verify failed
 
 
 ########

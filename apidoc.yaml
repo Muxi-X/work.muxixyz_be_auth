@@ -2477,9 +2477,14 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: page
+          in: path
+          required: true
+          description: page number[defualt = 1]
+          type: integer
         - name: POSTdata
           in: body
-          description: include pattern and projectID[projectID == 0 means all]
+          description: include pattern and projectID [projectID == 0 means all]
           schema:
             required:
               - pattern
@@ -2521,7 +2526,8 @@ paths:
                     - time   
         401:
           description: verify failed
-
+      security:
+      - token: []
 
 ########
 

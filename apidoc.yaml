@@ -1421,6 +1421,7 @@ paths:
         500:
           description: server error
       security:
+      - token: []
 
   /file/file/:
     post:
@@ -1667,462 +1668,27 @@ paths:
           description: server error
       security:
       - token: []
-
-  # # /project/{pid}/folder/:
-  # #   get:
-  # #     tags:
-  # #       - file
-  # #     summary: the API for get top-level folderlist
-  # #     description: you will get the list of this project's top-level folders and files
-  # #     parameters:
-  # #       - in: path
-  # #         name: pid
-  # #         description: the folder's project id
-  # #         required: true
-  # #         type: integer
-  # #     responses:
-  # #       200:
-  # #         description: get it
-  # #         schema:
-  # #           required:
-  # #             - fList
-  # #           properties:
-  # #             fList:
-  # #               type: array
-  # #               items:
-  # #                 required:
-  # #                   - kind
-  # #                   - id
-  # #                   - name
-  # #                 properties:
-  # #                   kind:
-  # #                     type: integer
-  # #                     description: 1 == file   2 == folder
-  # #                   id:
-  # #                     type: integer
-  # #                     description: the id of file or folder
-  # #                   name: 
-  # #                     type: string
-  # #                     description: the name of file or folder
-
-  # #       401:
-  # #         description: forbidden
-  # #       403:
-  # #         description: method not allowed
-  # #       500:
-  # #         description: server error
-  # #     security:
-  # #     - token: []
-
-  # /project/{pid}/folder/{foid}/:
-  #   post:
-  #     tags:
-  #       - file
-  #     summary: API for create a new folder
-  #     description: create a new folder
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the folder's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the folder's father-folder id, if you want to create a top-level folder, father-folder id should be 0
-  #         required: true
-  #         type: integer
-  #       - name: POSTdata
-  #         in: body
-  #         schema:
-  #           required:
-  #             - foldername
-  #             - kind
-  #           properties:
-  #             foldername:
-  #               type: string
-  #               description: the name you will use for new folder
-  #             kind:
-  #               type: boolean
-  #               description: false==folder of file   true==folder of md
-  #     responses:
-  #       201:
-  #         description: created
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
-  #   get:
-  #     tags: 
-  #       - file
-  #     summary: API for get a folder
-  #     description: get a new folder
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the folder's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the folder's father-folder id, if you want to get a top-level folder, father-folder id should be 0
-  #         required: true
-  #         type: integer
-  #     responses:
-  #       200:
-  #         description: get it
-  #         schema:
-  #           required:
-  #             - fList
-  #             - mList
-  #           properties:
-  #             fList:
-  #               type: array
-  #               description: folder of file or file
-  #               items:
-  #                 required:
-  #                   - kind
-  #                   - id
-  #                   - name
-  #                 properties:
-  #                   kind:
-  #                     type: integer
-  #                     description: 1 == file   2 == folder
-  #                   id:
-  #                     type: integer
-  #                     description: the id of file or folder
-  #                   name: 
-  #                     type: string
-  #                     description: the name of file or folder
-  #             mList:
-  #               type: array
-  #               description: folder of md or md
-  #               items:
-  #                 required:
-  #                   - kind
-  #                   - id
-  #                   - name
-  #                 properties:
-  #                   kind:
-  #                     type: integer
-  #                     description: 1 == file   2 == folder
-  #                   id:
-  #                     type: integer
-  #                     description: the id of file or folder
-  #                   name: 
-  #                     type: string
-  #                     description: the name of file or folder
-  #       401:  
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #       - token: []
-  #   put:
-  #     tags:
-  #       - file
-  #     summary: the API to edit folder's name
-  #     description: edit folder's name
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the folder's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the id of folder
-  #         required: true
-  #         type: integer
-  #       - name: PUTdata
-  #         in: body
-  #         schema:
-  #           required:
-  #             - foldername
-  #           properties:
-  #             foldername:
-  #               type: string
-  #               description: the name which you will user
-  #     responses:
-  #       200:
-  #         description: rename it
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
-  #   delete:
-  #     tags:
-  #       - file
-  #     summary: the API to delete a folder
-  #     description: use this API you will delete all folders and files in this folder, so use it carefully
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the folder's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the folder's father-folder id, if you want to delete a top-level folder, father-folder id should be 0
-  #         required: true
-  #         type: integer
-  #     responses:
-  #       200:
-  #         description: delete it 
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
-
-  # /project/{pid}/file/{foid}/{fid}/:
-  #   post:
-  #     tags:
-  #       - file
-  #     summary: API for create or uploda a new md or file
-  #     description: create or uploda a new md or file
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the file's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the file's father-folder id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: fid
-  #         description: the value of fid is 0, which is certain
-  #       - name: POSTdata
-  #         in: body
-  #         schema:
-  #           required:
-  #             - filername
-  #             - kind
-  #           properties:
-  #             file:
-  #               type: text/plain
-  #               description: you should give a content or a file, but not both
-  #             content:
-  #               type: string
-  #               description: you should give a content or a file, but not both
-  #             filername:
-  #               type: string
-  #               description: the name you will use for new file
-  #             kind:
-  #               type: boolean
-  #               description: false==file   true==md
-  #     responses:
-  #       201:
-  #         description: created
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
-  #   get:
-  #     tags: 
-  #       - file
-  #     summary: API for get a md or download a file
-  #     description: get a md or download a file
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the file's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the file's father-folder id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: fid
-  #         description: the id of md you want to edit or the id of file you want to download
-  #     responses:
-  #       200:
-  #         description: if this file is not md, you will download it without return data
-  #         schema:
-  #           required:
-  #             - name
-  #             - content
-  #             - lasteditor
-  #             - creator
-  #             - url
-  #             - kind
-  #           properties:
-  #             name: 
-  #               type: string
-  #               description: the name of file or folder
-  #             content:
-  #               type: string
-  #               description: the content of this md
-  #             finalleditor:
-  #               type: string
-  #               description: the lasteditor of this md
-  #             creator:
-  #               type: string
-  #               description: the creator of this md
-  #             url:
-  #               type: string
-  #               description: download url for file
-  #             kind:
-  #               type: boolean
-  #               description: flask == file   true == md
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #       - token: []
-  #   put:
-  #     tags:
-  #       - file
-  #     summary: the API to edit md's conetnt
-  #     description: edit md's conetnt
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the file's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the file's father-folder id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: fid
-  #         description: id of file or md
-  #       - name: PUTdata
-  #         in: body
-  #         schema:
-  #           required:
-  #             - foldername
-  #             - conetnt
-  #           properties:
-  #             filename:
-  #               type: string
-  #               description: the name which you will use
-  #             content:
-  #               type: string
-  #               description: the new content of md, PS in method of get you will get all content and when you use method put you shuld give me all content rather than the content you add just now
-  #     responses:
-  #       200:
-  #         description: change it
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
-  #   delete:
-  #     tags:
-  #       - file
-  #     summary: the API to delete a file
-  #     description: delete a file
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         description: the file's project id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: foid
-  #         description: the file's father id
-  #         required: true
-  #         type: integer
-  #       - in: path
-  #         name: fid
-  #         description: the id of file
-  #     responses:
-  #       200:
-  #         description: delete it 
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
-
-  
-  # /project/{pid}/f/{foid}/{toid}/:
-  #   put:
-  #     tags:
-  #       - file
-  #     summary: API for move folder file md
-  #     description: move folder file md
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         required: true
-  #         type: integer
-  #         description: the project id
-  #       - in: path
-  #         name: foid
-  #         required: true
-  #         type: integer
-  #         description: the id of folder you wnat to move
-  #       - in: path
-  #         name: toid
-  #         required: true
-  #         type: integer
-  #         description: the id of the folder you want to move to, and if you want to move folder to top-level folder, toid need to be 0
-  #       - name: PUTdata
-  #         in: body
-  #         schema:
-  #           required:
-  #             - kind
-  #           properties:
-  #             kind:
-  #               type: integer
-  #               description: 1==folder 2==file or md
-  #     responses:
-  #       200:
-  #         description: remove it
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
-  /project/{pid}/re/:
-    get:
-      tags: 
+  /project/re/:
+    post:
+      tags:
         - file
-      summary: API for get recycle bin
-      description: get a nrecycle bin
-      parameters:
-        - in: path
-          name: pid
-          description: the nrecycle bin's project id
-          required: true
-          type: integer
+      summary: API for get re
+      description: get re
+      parameters: 
+        - name: data
+          description: 详细信息看下一行的Model，传入两个列表，包含这个回收站里的内容的ID。
+          in: body
+          schema:
+            required:
+              - file
+              - doc
+            properties:
+              file:
+                type: array
+                description: 需要的文件的ID
+              doc:
+                type: array
+                description: 需要的文档的ID
       responses:
         200:
           description: get it
@@ -2133,32 +1699,49 @@ paths:
             properties:
               FileList:
                 type: array
-                description: file
+                description: children files of this folder
                 items:
                   required:
                     - id
                     - name
+                    - lasteditor
+                    - creator
+                    - url
+                    - create_time
                   properties:
                     id:
                       type: integer
-                      description: the id of file or folder
+                      description: the id of file
                     name: 
                       type: string
-                      description: the name of file or folder
+                      description: the name of file
+                    creator:
+                      type: string
+                      description: the creator of this file
+                    url:
+                      type: string
+                      description: download url for file
+                    create_time:
+                      type: string
+                      description: the create_time
               DocList:
                 type: array
-                description: md
+                description: children md of this folder
                 items:
                   required:
                     - id
                     - name
+                    - lastcontent
                   properties:
                     id:
                       type: integer
-                      description: the id of file or folder
+                      description: the id of file
                     name: 
                       type: string
-                      description: the name of file or folder
+                      description: the name of file
+                    lastcontent:
+                      type: string
+                      description: 最新内容可以用来做封面
         401:  
           description: forbidden
         403:
@@ -2166,34 +1749,30 @@ paths:
         500:
           description: server error
       security:
-        - token: []
+      - token: []
     put:
-      tags: 
+      tags:
         - file
       summary: put back to the original position
-      description: put back the folder or file to the original position
-      parameters:
-        - in: path
-          name: pid
-          description: the nrecycle bin's project id
-          required: true
-          type: integer
+      description: put back to the original position
+      parameters: 
         - name: data
+          description: 详细信息看下一行的Model，传入两个列表，包含要恢复的ID。
           in: body
           schema:
             required:
-              - id
-              - kind
+              - file
+              - doc
             properties:
-              id:
-                type: integer
-                description: id of file or md
-              kind:
-                type: integer
-                description: 1==file 2==md
+              file:
+                type: array
+                description: 恢复的文件的ID
+              doc:
+                type: array
+                description: 恢复的文档的ID
       responses:
         200:
-          description: successfully
+          description: recover
         401:  
           description: forbidden
         403:
@@ -2201,34 +1780,30 @@ paths:
         500:
           description: server error
       security:
-        - token: []
+      - token: []
     delete:
-      tags: 
+      tags:
         - file
-      summary: really delete file or md
-      description: really delete file or md
-      parameters:
-        - in: path
-          name: pid
-          description: the nrecycle bin's project id
-          required: true
-          type: integer
+      summary: really delete
+      description: really delete
+      parameters: 
         - name: data
+          description: 详细信息看下一行的Model，传入两个列表，包含要删除的ID。
           in: body
           schema:
             required:
-              - id
-              - kind
+              - file
+              - doc
             properties:
-              id:
-                type: integer
-                description: id of file or md
-              kind:
-                type: integer
-                description: 1==file 2==md
+              file:
+                type: array
+                description: 删除的文件的ID
+              doc:
+                type: array
+                description: 删除的文档的ID
       responses:
         200:
-          description: successfully
+          description: delete
         401:  
           description: forbidden
         403:
@@ -2236,41 +1811,7 @@ paths:
         500:
           description: server error
       security:
-        - token: []
-        
-  # /project/{pid}/file/{fiid}/{toid}/:
-  #   put:
-  #     tags:
-  #       - file
-  #     summary: API for move file or md
-  #     description: move file or md 
-  #     parameters:
-  #       - in: path
-  #         name: pid
-  #         required: true
-  #         type: integer
-  #         description: the project id
-  #       - in: path
-  #         name: fiid
-  #         required: true
-  #         type: integer
-  #         description: the id of file or md you wnat to move
-  #       - in: path
-  #         name: toid
-  #         required: true
-  #         type: integer
-  #         description: the id of the file or md you want to move to, and if you want to move file or md to top-level folder, toid need to be 0
-  #     responses:
-  #       200:
-  #         description: remove it
-  #       401:
-  #         description: forbidden
-  #       403:
-  #         description: method not allowed
-  #       500:
-  #         description: server error
-  #     security:
-  #     - token: []
+      - token: []
 
   /message/list/:
     get:

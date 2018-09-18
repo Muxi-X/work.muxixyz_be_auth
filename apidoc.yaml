@@ -1669,26 +1669,22 @@ paths:
       security:
       - token: []
   /project/re/:
-    post:
+    get:
       tags:
         - file
       summary: API for get re
       description: get re
       parameters: 
-        - name: data
-          description: 详细信息看下一行的Model，传入两个列表，包含这个回收站里的内容的ID。
+        - name: id
+          description: project 的ID
           in: body
           schema:
             required:
-              - file
-              - doc
+              - id
             properties:
-              file:
-                type: array
-                description: 需要的文件的ID
-              doc:
-                type: array
-                description: 需要的文档的ID
+              id:
+                type: integer
+                description: 项目的ID
       responses:
         200:
           description: get it

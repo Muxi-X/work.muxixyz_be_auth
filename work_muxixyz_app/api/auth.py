@@ -25,6 +25,10 @@ def signup():
         record = Apply(user_id = usr.id)
         db.session.add(record)
         db.session.commit()
+        if Team.query.filter_by(id = 1).first() is None:
+            muxi = Team(name = "muxi", count = 0, creator = 1)
+        db.session.add(muxi)
+        db.session.commit()
         response = jsonify({
             "msg": 'successful!', 
         })
@@ -43,14 +47,14 @@ def login():
     usr = User.query.filter_by(name = usrname).first()
     if usr is None:
         response = jsonify({
-            "msg": 'user not existed!', 
+            "msg": 'user not existed!',
         })
         response.status_code = 401
         return response
     else:
         token = usr.generate_confirmation_token(usr)
         response = jsonify({
-            "token": token, 
+            "token": token,
         })
         response.status_code = 200
         return response

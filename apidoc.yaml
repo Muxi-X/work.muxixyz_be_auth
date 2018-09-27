@@ -666,6 +666,75 @@ paths:
                       type: string                   
       security:
       - token: []
+  /feed/list/personal/{page}/:
+    get:
+      tags:
+        - feed
+      summary: API for getting a list of a user's feeds 
+      description: KIND[0]status[1]project[2]doc[3]comments[4]team[5]user[6]file.get feed list.divider_id[0]status[1-n]projectid
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/token"
+        - in: path
+          name: page
+          description: page to get
+          required: true
+          type: string
+      responses:
+        200:
+          description: feed list
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+          schema:
+            required:
+              - feed
+              - count 
+              - page
+            properties:
+              count:
+                type: integer
+              page:
+                type: integer
+              feed:
+                type: array
+                items:
+                  required:
+                    - time_d
+                    - time_s
+                    - avatar_url
+                    - uid
+                    - action
+                    - kind
+                    - sourceID
+                    - divider
+                    - divider_id
+                    - divider_name
+                  properties:
+                    time_d:
+                      type: string
+                    time_s:
+                      type: string
+                    avatar_url:
+                      type: string
+                    uid:
+                      type: integer
+                    action:
+                      type: string
+                    kind:
+                      type: integer
+                    sourceID:
+                      type: integer
+                    divider:
+                      type: boolean
+                    divider_id:
+                      type: integer
+                    divider_name:
+                      type: string                   
+      security:
+      - token: []  
   /project/{pid}/file/{fid}/comment/{cid}/:
     get:
       tags:

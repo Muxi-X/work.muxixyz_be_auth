@@ -621,7 +621,7 @@ paths:
               description: next page & last page url
           schema:
             required:
-              - feed
+              - feed_stream
               - count 
               - page
             properties:
@@ -629,7 +629,7 @@ paths:
                 type: integer
               page:
                 type: integer
-              feed:
+              feed_stream:
                 type: array
                 items:
                   required:
@@ -690,7 +690,7 @@ paths:
               description: next page & last page url
           schema:
             required:
-              - feed
+              - feed_stream
               - count 
               - page
             properties:
@@ -698,7 +698,7 @@ paths:
                 type: integer
               page:
                 type: integer
-              feed:
+              feed_stream:
                 type: array
                 items:
                   required:

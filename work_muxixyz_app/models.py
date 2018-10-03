@@ -13,12 +13,14 @@ class User(db.Model):
     avatar = db.Column(db.String(50))
     tel = db.Column(db.String(15))
     role = db.Column(db.Integer, default=0)
+    email_service = db.Column(db.Boolean, default = False)
+    message = db.Column(db.Boolean, default = False)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     status = db.relationship('Statu', backref='user', lazy='dynamic')
     receiveMsgs = db.relationship('Message', backref='user', lazy='dynamic')
     feeds = db.relationship('Feed', backref='user', lazy='dynamic')
-
+    
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'])
         return s.dumps({'confirm': self.id}).decode('utf-8')
@@ -36,6 +38,7 @@ class Group(db.Model):
     __tablename__ = 'groups'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), unique=True)
+    order = db.Column(db.Integer, unique=True, default=None)
     count = db.Column(db.Integer)
     leader = db.Column(db.Integer)
     time = db.Column(db.String(30))
@@ -141,6 +144,7 @@ class Message(db.Model):
     readed = db.Column(db.Boolean, default=False)
     from_id = db.Column(db.Integer)
     receive_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    file_kind = db.Column(db.Integer)
     file_id = db.Column(db.Integer)
     
 class Feed(db.Model):
@@ -155,9 +159,10 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     file_id = db.Column(db.Integer, db.ForeignKey('files.id'), default=0)
 
-    
+
 class User2File(db.Model):
     __tablename__ = 'user2files'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
     file_id = db.Column(db.Integer)
+    file_kind = db.Column(db.Integer, default = 0)

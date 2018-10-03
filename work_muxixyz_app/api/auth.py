@@ -22,13 +22,15 @@ def signup():
                 tel = tel, 
             )
         db.session.add(usr)
+        db.session.commit()
+        usr = User.query.filter_by(name = name).first()
         record = Apply(user_id = usr.id)
         db.session.add(record)
         db.session.commit()
         if Team.query.filter_by(id = 1).first() is None:
             muxi = Team(name = "muxi", count = 0, creator = 1)
-        db.session.add(muxi)
-        db.session.commit()
+            db.session.add(muxi)
+            db.session.commit()
         response = jsonify({
             "msg": 'successful!', 
         })

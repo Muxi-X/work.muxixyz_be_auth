@@ -1061,6 +1061,7 @@
                 - maker
                 - action
                 - sourceID
+                - sourceKind
               properties:
                 receiver:
                   type: string
@@ -1069,6 +1070,8 @@
                 action:
                   type: string
                 sourceID:
+                  type: integer
+                sourceKind:
                   type: integer
         responses:
           200:
@@ -1618,11 +1621,6 @@
             description: KIND[1]hover[0]click
             required: true
             type: integer
-          - in: path
-            name: page
-            description: default=1
-            required: true
-            type: integer
         responses:
           200:
             description: message list
@@ -1638,12 +1636,16 @@
                   type: array
                   items:
                     required:
+                      - sourceKind
                       - sourceID
                       - fromName
                       - fromAvatar
+                      - action
                       - time
                       - readed
                     properties:
+                      sourceKind:
+                        type: integer
                       sourceID:
                         type: integer
                       fromName:
@@ -1651,6 +1653,8 @@
                       fromAvatar:
                         type: string
                       time:
+                        type: string
+                      action:
                         type: string
                       readed:
                         type: boolean
@@ -1716,6 +1720,7 @@
                 - time
                 - action
                 - sourceID
+                - sourceKind
               properties:
                 msgID:
                   type: integer
@@ -1726,6 +1731,8 @@
                 action:
                   type: string
                 sourceID:
+                  type: integer
+                sourceKind:
                   type: integer
           401:
             description: verify failed
@@ -1779,11 +1786,18 @@
         produces:
           - application/json
         parameters:
-          - in: path
-            name: fileName
-            description: file name
-            required: true
-            type: string
+          - name: postData
+            in: body
+            description: file ID
+            schema:
+              required: 
+                - fileID
+                - fileKind
+              properties:
+                fileID:
+                  type: integer
+                fileKind:
+                  type: integer
         responses:
           200:
             description: OK
@@ -1809,6 +1823,7 @@
             schema:
               required:
                 - fileName
+                - fileKind
               properties:
                 fileName:
                   type: string

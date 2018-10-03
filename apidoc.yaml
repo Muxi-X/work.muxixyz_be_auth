@@ -1,0 +1,2842 @@
+swagger: '2.0'
+
+### information start ###
+info:
+  description: work.muxixyz.com API 
+  version: 1.0.0
+  title: Work API
+  contact:
+    email: shiina_orez@qq.com
+  #license
+### information end ###
+
+host: work.muxixyz.com
+basePath: /api/v1.0
+schemes:
+  - https
+  - http
+
+### tag start ###
+
+tags:
+  - name: auth
+    description: 身份验证服务
+
+  - name: management
+    description: 成员管理服务
+
+  - name: feed
+    description: feed流服务
+
+  - name: message
+    description: 消息服务
+
+  - name: project
+    description: 项目服务
+
+  - name: status
+    description: 进度服务
+
+  - name: file
+    description: 文件服务
+
+  - name: search
+    description: 搜索服务    
+### tag end ###
+
+### auth start ###
+
+securityDefinitions:
+
+  basic:
+    type: basic
+    description: http basic auth,即在请求头中添加Authorization字段，内容为base64.encode(“邮箱:muxi304”)
+
+  token:
+    type: apiKey
+    description: token,然后在请求头中添加Authorization字段，内容为base64.encode(“token:”)
+    name: token
+    in: header
+
+### auth end ###
+
+### path start ###
+
+paths:
+  /auth/signup/:
+    post:
+      tags:
+        - auth
+      summary: Signup a account.
+      description: Just save a list of user.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: data to fill the segments
+          schema:
+            required:
+              - name
+              - email
+              - avatar
+              - tel
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              avatar:
+                type: string
+              tel:
+                type: string
+              teamID:
+                type: integer
+      responses:
+        200:
+          description: Signup successfully
+        401:
+          description: User already exist
+  /auth/login/:
+    post:
+      tags:
+        - auth
+      summary: Login a account
+      description: Get a token formed by user-info
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: data to mark who want a token
+          schema:
+            required:
+              - username
+            properties:
+              username:
+                type: string
+      responses:
+        200:
+          description: Return a token
+          schema:
+            required:
+              - token
+            properties:
+              token:
+                type: string
+  /group/new/:
+    post:
+      tags:
+        - management
+      summary: post a new group
+      description: a groupName and a user list
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: data to set a enw group
+          schema:
+            required:
+              - groupName
+              - userList
+            properties:
+              groupName:
+                type: string
+              userlist:
+                type: array
+                items:
+                  required:
+                    - userID
+                  properties:
+                    userID:
+                      type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /group/{gid}/:
+    delete:
+      tags:
+        - management
+      summary: delete a group
+      description: DANGER:must be superuser can delete a group
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: gid
+          description: groupID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed    
+      security:
+      - token: []  
+  /group/{gid}/userList/:
+    get:
+      tags:
+        - management
+      summary: group user list
+      description: get a user list by group id/ if gid ==0 ,get all users 
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: gid
+          description: groupID
+          required: true
+          type: integer
+        - in: path
+          name: page
+          description: default=1
+          required: true
+          type: integer
+      responses:
+        200:
+          description: user list
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+          schema:
+            required: 
+              - count
+              - pageMax
+              - pageNow
+              - hasNext
+              - list
+            properties:
+              count:
+                type: integer
+              pageMax:
+                type: integer
+              pageNow:
+                type: integer
+              hasNext:
+                type: boolean
+              list:
+                type: array
+                items:
+                  required:
+                    - teamID
+                    - username
+                    - userID
+                    - groupName
+                    - avatar
+                    - role
+                    - email
+                  properties:
+                    teamID:
+                      type: integer
+                    username:
+                      type: string
+                    userID:
+                      type: integer
+                    groupName:
+                      type: string
+                    role:
+                      type: integer
+                    email:
+                      type: string
+                    avatar:
+                      type: string
+      security:
+      - token: []
+  /group/list/:
+    get:
+      tags:
+        - management
+      summary: get a group list
+      description: verify token and get a list/all group list
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - groupList
+            properties:
+              groupList:
+                type: array
+                items:
+                  required:
+                    - groupID
+                    - groupName
+                    - userCount
+                  properties:
+                    groupID:
+                      type: integer
+                    groupName:
+                      type: string
+                    userCount:
+                      type: integer
+      security:
+      - token: []  
+
+  /group/{gid}/manageUser:
+    post:
+      tags:
+        - management
+      summary: change group members by list
+      description: get a list of userID and change it
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: gid
+          description: groupID
+          required: true
+          type: integer
+        - in: body
+          name: POSTdata
+          description: userID List
+          schema:
+            required:
+              - userList
+            properties:
+              userList:
+                type: array
+                items:
+                  required:
+                    - userID
+                  properties:
+                    userID:
+                      type: integer
+      responses:
+        200:
+          description: OK
+      security:
+      - token: []  
+  /project/{pid}/userList/:
+    get:
+      tags:
+        - management
+      summary: get project user list
+      description: get a list of user by projectID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: projectID
+          required: true
+          type: integer
+        - in: path
+          name: page
+          description: page
+          required: true
+          type: integer
+      responses:
+        200:
+          description: user list
+          schema:
+            required:
+              - list
+              - count
+              - pageMax
+              - pageNow
+              - hasNext
+            properties:
+              pageMax:
+                type: integer
+              pageNow:
+                type: integer
+              hasNext:
+                type: boolean
+              count:
+                type: integer
+              list:
+                type: array
+                items:
+                  required:
+                    - username
+                    - userID
+                    - avatar
+                  properties:
+                    username:
+                      type: string
+                    userID:
+                      type: integer
+                    avatar:
+                      type: string 
+      security:
+      - token: []
+  /user/{uid}/project/list/:
+    get:
+      tags:
+        - management
+      summary: get a project list
+      description: verify token and get a list/ if you are admin or superuser, get all projetc list
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid
+          description: user ID
+          required: true
+          type: integer
+        - in: path
+          name: page
+          description: page
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - list
+              - count
+              - pageMax
+              - pageNow
+              - hasNext
+            properties:
+              pagewMax:
+                type: integer
+              pageNow:
+                type: integer
+              hasNext:
+                type: boolean
+              count:
+                type: integer
+              list:
+                type: array
+                items:
+                  required:
+                    - projectID
+                    - projectName
+                    - userCount
+                    - intro
+                  properties:
+                    projectID:
+                      type: integer
+                    projectName:
+                      type: string
+                    userCount:
+                      type: integer
+                    intro:
+                      type: string
+      security:
+      - token: []
+  /user/{uid}/:
+    delete:
+      tags:
+        - management
+      summary: remove user out of team
+      description: set role=0 and remove all data to None
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid
+          description: user ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+        - token: []
+
+  /user/2bMember/:
+    post:
+      tags:
+        - management
+      summary: accept a new member
+      description: receive a user ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: userID
+          schema:
+            required:
+              - userID
+            properties:
+              userID:
+                type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+        402:
+          description: user already be a member
+      security:
+      - token: []
+  /user/admins/:
+    get:
+      tags:
+        - management
+      summary: get a list of admin
+      description: verify token and get a list of admin
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - userID
+                    - userName
+                  properties:
+                    userID:
+                      type: integer
+                    userName:
+                      type: string
+        201:
+          description: No one is admin
+  /user/addAdmin/:
+    post:
+      tags:
+        - management
+      summary: super user add someone on admin list
+      description: verify token and add a FK
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: who are the lucky dog
+          schema:
+            required:
+              - luckydog
+            properties:
+              luckydog:
+                type: integer
+      responses:
+        200:
+          description: luckydog be a admin
+        403:
+          description: ddl
+        401:
+          description: auth fail
+      security:
+      - token: []
+  /user/{uid}/managePro/:
+    post:
+      tags:
+        - management
+      summary: project management
+      description: get a list of project,and change user's project list
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid
+          description: user ID 
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: data to change projects
+          schema:
+            required:
+              - projectList
+            properties:
+              projectList:
+                type: array
+                items:
+                  required:
+                    - projectID
+                  properties:
+                    projectID:
+                      type: integer
+      responses:
+        200:
+          description: change it successfully
+        401:
+          description: verify failed
+      security:
+      - token: []  
+  /user/{uid}/manageGroup/:
+    post:
+      tags:
+        - management
+      summary: superuser change member's group
+      description: just receive a groupID  
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid
+          description: user ID
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: groupID
+          schema:
+            required:
+              - groupID
+            properties:
+              groupID:
+                type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /user/{uid}/setRole/:
+    post:
+      tags:
+        - management
+      summary: superuser set user's role
+      description: receive a number and change it
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid
+          description: user ID
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: role
+          schema:
+            required:
+              - role
+            properties:
+              role:
+                type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /user/{uid}/setting/:
+    get:
+      tags:
+       - management
+      summary: get one's informattion
+      description: get information by one's id
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid
+          description: userID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - name
+              - email
+              - tel
+              - email_service
+              - message
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              tel:
+                type: string
+              email_service:
+                type: boolean
+              message:
+                type: boolean
+      security:
+      - token: []
+                
+    post:
+      tags:
+        - management
+      summary: user's setting
+      description: setting about message and email service
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid 
+          description: user ID
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: message and email
+          schema:
+            required:
+              - username
+              - address
+              - tel
+              - message
+              - email
+            properties:
+              username:
+                type: string
+              address:
+                type: string
+              tel:
+                type: string
+              message:
+                type: boolean
+              email:
+                type: boolean
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+      - token: []
+      
+  /team/applyList/:
+    get:
+      tags:
+        - management
+      summary: get a list of who want join the "club"
+      description: receive a token, verify it and return list
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - userID
+                    - userName
+                    - userEmail
+                  properties:
+                    userID:
+                      type: integer
+                    userName:
+                      type: string
+                    userEmail:
+                      type: string
+        401:
+          description: verify failed
+  /team/apply/{uid}/:
+    delete:
+      tags:
+        - management
+      summary: refuse application to join team
+      description: receive a id and delete it 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uid
+          description: userID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+        403:
+          description: other admin already refuse this one
+      
+  /feed/new/:
+    post:
+      tags:
+        - feed
+      summary: Add the events in the exchange
+      description: KIND[1]process[2]file[3]comments[4]team. Create a events and send it to the exchange, and queue
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: data to create a event
+          schema:
+            required:
+              - action
+              - kind
+              - sourceID
+            properties:
+              from:
+                type: string
+              action:
+                type: string
+              kind:
+                type: integer
+              sourceID:
+                type: integer
+      responses:
+        200:
+          description: feed add successfully
+      security:
+      - token: []
+  /feed/list/:
+    get:
+      tags:
+        - feed
+      summary: API for getting a list of feeds
+      description: Use mq's receive service to get feed from different queue.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: page
+          description: page to get
+          required: true
+          type: string
+      responses:
+        200:
+          description: feed list
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+          schema:
+            type: array
+            items:
+              required:
+                - creator
+                - time
+                - action
+                - kind
+                - sourceID
+              properties:
+                creator:
+                  type: string
+                time:
+                  type: string
+                action:
+                  type: string
+                kind:
+                  type: integer
+                sourceID:
+                  type: integer
+      security:
+      - token: []
+  /project/{pid}/file/{fid}/comment/{cid}/:
+    get:
+      tags:
+        - project
+      summary: get information of a comment by id
+      description: get username,avatar,time,including
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: cid
+          description: comment id
+          required: true
+          type: integer
+        - in: path
+          name: pid
+          description: project ID
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: file ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - username
+              - avatar
+              - time
+              - content
+            properties:
+              username:
+                type: string
+              avatar:
+                type: string
+              time:
+                type: string
+              content:
+                type: string
+        401:
+          description: verify failed
+        402:
+          description: can't find comment
+      security:
+      - token: []
+    delete:
+      tags:
+        - project
+      summary: delete a comment by id
+      description: admin
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: cid
+          description: comment id
+          required: true
+          type: integer
+        - in: path
+          name: pid
+          description: project ID
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: file ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+        402:
+          description: can't find
+      security:
+      - token: []
+  /project/{pid}/file/{fid}/comments/:
+    get:
+      tags:
+        - project
+      summary: get a list of comment
+      description: get
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: project ID
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: file ID
+          required: true
+          type: integer
+        - in: path
+          name: page
+          description: default=1
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+          schema:
+            required:
+              - commentList
+            properties:
+              commentList:
+                type: array
+                items:
+                  required:
+                    - username
+                    - avatar
+                    - time
+                    - content
+                  properties:
+                    username:
+                      type: string
+                    avatar:
+                      type: string
+                    time:
+                      type: string
+                    content:
+                      type: string
+        401:
+          description: verify failed
+        402:
+          description: project or file not found
+      security:
+      - token: []
+    post:
+      tags:
+        - project
+      summary: comment a file or doc
+      description: verify and post 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: project ID
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          description: file or doc ID
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: post a new comment
+          schema:
+            required:
+              - content
+            properties:
+              content:
+                type: string
+      responses:
+        201:
+          description: OK
+        401:
+          description: verify failed
+        402:
+          description: project or file not found       
+      security:
+      - token: []
+  /message/new/:
+    post:
+      tags:
+        - message
+      summary: Make a new message to user.
+      description: KIND[1]process[2]file[3]comments[4]team. Create a events and send it to the exchange, and queue
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: data to make a message
+          schema:
+            required:
+              - receiver
+              - maker
+              - action
+              - sourceID
+            properties:
+              receiver:
+                type: string
+              maker:
+                type: string
+              action:
+                type: string
+              sourceID:
+                type: integer
+      responses:
+        200:
+          description: message add successfully
+      security:
+      - token: []
+
+  # /project/{pid}/folder/:
+  #   post:
+  #     tags:
+  #       - file
+  #     summary: API for create a new top-level folder
+  #     description: create a new folder
+  #     parameters:
+  #       - in: path
+  #         name: pid
+  #         description: the folder's project id
+  #         required: true
+  #         type: integer
+  #       - name: POSTdata
+  #         in: body
+  #         description: the data to make a new folder
+  #         schema:
+  #           required:
+  #             - foldername
+  #           properties:
+  #             foldername:
+  #               type: string
+  #               description: the name of this folder
+  #     responses:
+  #       201:
+  #         description: created
+  #       401:
+  #         description: forbidden
+  #       403:
+  #         description: method not allowed
+  #       500:
+  #         description: server error
+  #     security:
+  #     - token: []
+  #   get:
+  #     tags:
+  #       - file
+  #     summary: the API for get top-level folderlist
+  #     description: you will get the list of this project's top-level folders and files
+  #     parameters:
+  #       - in: path
+  #         name: pid
+  #         description: the folder's project id
+  #         required: true
+  #         type: integer
+  #     responses:
+  #       200:
+  #         description: get it
+  #         schema:
+  #           required:
+  #             - fList
+  #           properties:
+  #             fList:
+  #               type: array
+  #               items:
+  #                 required:
+  #                   - kind
+  #                   - id
+  #                   - name
+  #                 properties:
+  #                   kind:
+  #                     type: integer
+  #                     description: 1 == file   2 == folder
+  #                   id:
+  #                     type: integer
+  #                     description: the id of file or folder
+  #                   name: 
+  #                     type: string
+  #                     description: the name of file or folder
+
+  #       401:
+  #         description: forbidden
+  #       403:
+  #         description: method not allowed
+  #       500:
+  #         description: server error
+  #     security:
+  #     - token: []
+
+  /project/{pid}/folder/{foid}/:
+    post:
+      tags:
+        - file
+      summary: API for create a new folder
+      description: create a new folder
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the folder's father-folder id, if you want to create a top-level folder, father-folder id should be 0
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          schema:
+            required:
+              - foldername
+              - kind
+            properties:
+              foldername:
+                type: string
+                description: the name you will use for new folder
+              kind:
+                type: boolean
+                description: false==folder of file   true==folder of md
+      responses:
+        201:
+          description: created
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    get:
+      tags: 
+        - file
+      summary: API for get a folder
+      description: get a new folder
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the folder's father-folder id, if you want to get a top-level folder, father-folder id should be 0
+          required: true
+          type: integer
+      responses:
+        200:
+          description: get it
+          schema:
+            required:
+              - fList
+              - mList
+            properties:
+              fList:
+                type: array
+                description: folder of file or file
+                items:
+                  required:
+                    - kind
+                    - id
+                    - name
+                  properties:
+                    kind:
+                      type: integer
+                      description: 1 == file   2 == folder
+                    id:
+                      type: integer
+                      description: the id of file or folder
+                    name: 
+                      type: string
+                      description: the name of file or folder
+              mList:
+                type: array
+                description: folder of md or md
+                items:
+                  required:
+                    - kind
+                    - id
+                    - name
+                  properties:
+                    kind:
+                      type: integer
+                      description: 1 == file   2 == folder
+                    id:
+                      type: integer
+                      description: the id of file or folder
+                    name: 
+                      type: string
+                      description: the name of file or folder
+        401:  
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+    put:
+      tags:
+        - file
+      summary: the API to edit folder's name
+      description: edit folder's name
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the id of folder
+          required: true
+          type: integer
+        - name: PUTdata
+          in: body
+          schema:
+            required:
+              - foldername
+            properties:
+              foldername:
+                type: string
+                description: the name which you will user
+      responses:
+        200:
+          description: rename it
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    delete:
+      tags:
+        - file
+      summary: the API to delete a folder
+      description: use this API you will delete all folders and files in this folder, so use it carefully
+      parameters:
+        - in: path
+          name: pid
+          description: the folder's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the folder's father-folder id, if you want to delete a top-level folder, father-folder id should be 0
+          required: true
+          type: integer
+      responses:
+        200:
+          description: delete it 
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+
+  /project/{pid}/file/{foid}/{fid}/:
+    post:
+      tags:
+        - file
+      summary: API for create or uploda a new md or file
+      description: create or uploda a new md or file
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father-folder id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          required: true
+          description: the value of fid is 0, which is certain
+          type: integer
+        - name: POSTdata
+          in: body
+          schema:
+            required:
+              - filername
+              - kind
+            properties:
+              file:
+                type: string
+                description: you should give a content or a file, but not both
+              content:
+                type: string
+                description: you should give a content or a file, but not both
+              filername:
+                type: string
+                description: the name you will use for new file
+              kind:
+                type: boolean
+                description: false==file   true==md
+      responses:
+        201:
+          description: created
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    get:
+      tags: 
+        - file
+      summary: API for get a md or download a file
+      description: get a md or download a file
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father-folder id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          required: true
+          description: the id of md you want to edit or the id of file you want to download
+          type: integer
+      responses:
+        200:
+          description: if this file is not md, you will download it without return data
+          schema:
+            required:
+              - mdlist
+            properties:
+              fList:
+                type: array
+                items:
+                  required:
+                    - name
+                    - content
+                    - lasteditor
+                    - creator
+                  properties:
+                    name: 
+                      type: string
+                      description: the name of file or folder
+                    content:
+                      type: string
+                      description: the content of this md
+                    finalleditor:
+                      type: string
+                      description: the lasteditor of this md
+                    creator:
+                      type: string
+                      description: the creator of this md
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+    put:
+      tags:
+        - file
+      summary: the API to edit md's conetnt
+      description: if this file if md you can edit md and change name, else you can only change name of file, and conetnt could be empty
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father-folder id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          required: true
+          description: id of file or md
+          type: integer
+        - name: PUTdata
+          in: body
+          schema:
+            required:
+              - foldername
+              - conetnt
+            properties:
+              foldername:
+                type: string
+                description: the name which you will user
+              conetnt:
+                type: string
+                description: the new content of md, PS in method of get you will get all content and when you use method put you shuld give me all content rather than the content you add just now
+      responses:
+        200:
+          description: change it
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+    delete:
+      tags:
+        - file
+      summary: the API to delete a file
+      description: delete a file
+      parameters:
+        - in: path
+          name: pid
+          description: the file's project id
+          required: true
+          type: integer
+        - in: path
+          name: foid
+          description: the file's father id
+          required: true
+          type: integer
+        - in: path
+          name: fid
+          required: true
+          description: the id of file
+          type: integer
+      responses:
+        200:
+          description: delete it 
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+
+  
+  /project/{pid}/f/{foid}/{toid}/:
+    put:
+      tags:
+        - file
+      summary: API for move folder file md
+      description: move folder file md
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          type: integer
+          description: the project id
+        - in: path
+          name: foid
+          required: true
+          type: integer
+          description: the id of folder you wnat to move
+        - in: path
+          name: toid
+          required: true
+          type: integer
+          description: the id of the folder you want to move to, and if you want to move folder to top-level folder, toid need to be 0
+        - name: PUTdata
+          in: body
+          schema:
+            required:
+              - kind
+            properties:
+              kind:
+                type: integer
+                description: 1==folder 2==file or md
+      responses:
+        200:
+          description: remove it
+        401:
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+      - token: []
+  /project/{pid}/re/{rid}/:
+    get:
+      tags: 
+        - file
+      summary: API for get recycle bin
+      description: get a nrecycle bin
+      parameters:
+        - in: path
+          name: pid
+          description: the nrecycle bin's project id
+          required: true
+          type: integer
+        - in: path
+          name: rid
+          description: the folder's father-folder id, if you want to get a top-level folder in nrecycle bin, father-folder id should be 0
+          required: true
+          type: integer
+      responses:
+        200:
+          description: get it
+          schema:
+            required:
+              - fList
+            properties:
+              fList:
+                type: array
+                description: folder of file or file
+                items:
+                  required:
+                    - kind
+                    - id
+                    - name
+                  properties:
+                    kind:
+                      type: integer
+                      description: 1 == file   2 == folder
+                    id:
+                      type: integer
+                      description: the id of file or folder
+                    name: 
+                      type: string
+                      description: the name of file or folder
+        401:  
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+    put:
+      tags: 
+        - file
+      summary: put back to the original position
+      description: put back the folder or file to the original position
+      parameters:
+        - in: path
+          name: pid
+          description: the nrecycle bin's project id
+          required: true
+          type: integer
+        - in: path
+          name: rid
+          description: the folder's father-folder id, if you want to get a top-level folder in nrecycle bin, father-folder id should be 0
+          required: true
+          type: integer
+        - name: id
+          in: body
+          schema:
+            required:
+              - id
+              - kind
+            properties:
+              id:
+                type: integer
+                description: id of file or folder
+              kind:
+                type: integer
+                description: 1==file 2==folder
+      responses:
+        200:
+          description: successfully
+        401:  
+          description: forbidden
+        403:
+          description: method not allowed
+        500:
+          description: server error
+      security:
+        - token: []
+
+  # /project/{pid}/file/{fiid}/{toid}/:
+  #   put:
+  #     tags:
+  #       - file
+  #     summary: API for move file or md
+  #     description: move file or md 
+  #     parameters:
+  #       - in: path
+  #         name: pid
+  #         required: true
+  #         type: integer
+  #         description: the project id
+  #       - in: path
+  #         name: fiid
+  #         required: true
+  #         type: integer
+  #         description: the id of file or md you wnat to move
+  #       - in: path
+  #         name: toid
+  #         required: true
+  #         type: integer
+  #         description: the id of the file or md you want to move to, and if you want to move file or md to top-level folder, toid need to be 0
+  #     responses:
+  #       200:
+  #         description: remove it
+  #       401:
+  #         description: forbidden
+  #       403:
+  #         description: method not allowed
+  #       500:
+  #         description: server error
+  #     security:
+  #     - token: []
+
+  /message/list/:
+    get:
+      tags:
+        - message
+      summary: API for getting a list of massages
+      description: Get a list of message by two ways.
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: kind
+          description: KIND[1]hover[0]click
+          required: true
+          type: integer
+        - in: path
+          name: page
+          description: default=1
+          required: true
+          type: integer
+      responses:
+        200:
+          description: message list
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+          schema:
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - sourceID
+                    - fromName
+                    - fromAvatar
+                    - time
+                    - readed
+                  properties:
+                    sourceID:
+                      type: integer
+                    fromName:
+                      type: string
+                    fromAvatar:
+                      type: string
+                    time:
+                      type: string
+                    readed:
+                      type: boolean
+      security:
+      - token: []
+  /message/readAll/:
+    post:
+      tags:
+        - message
+      summary: click to read all messages
+      description: verify and change all unreaded message
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: username
+          schema:
+            required:
+              - username
+            properties:
+              username:
+                type: string
+      responses:
+        200:
+          description: OK
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /message/{username}/{mid}/:
+    get:
+      tags:
+        - message
+      summary: message information
+      description: verify token and find id
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: mid
+          description: messageID
+          required: true
+          type: integer
+        - in: path
+          name: username
+          description: user's name to find user and verify
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - msgID
+              - fromName
+              - time
+              - action
+              - sourceID
+            properties:
+              msgID:
+                type: integer
+              fromName:
+                type: string
+              time:
+                type: string
+              action:
+                type: string
+              sourceID:
+                type: integer
+        401:
+          description: verify failed
+        402:
+          description: user isn't exist
+        403:
+          description: message isn't exist
+      security:
+      - token: []
+  /user/attention/:
+    get:
+      tags:
+        - message
+      summary: get a list of user attenting file
+      description: receive a token and return a list of file
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - list
+            properties:
+              list:
+                type: array
+                items:
+                  required:
+                    - fileName
+                    - projectName
+                    - username
+                    - date
+                  properties:
+                    filename:
+                      type: string
+                    username:
+                      type: string
+                    projectName:
+                      type: string
+                    date:
+                      type: string
+    post:
+      tags:
+        - message
+      summary: post and you will pay attention to file or doc
+      description: receive a fileID and add it to attention list
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: fileName
+          description: file name
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed 
+        402:
+          description: file not found!
+      security:
+      - token: []
+    delete:
+      tags:
+        - message
+      summary: post a filename and delete it
+      description: find FILE in database and delete attention
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: filename
+          schema:
+            required:
+              - fileName
+            properties:
+              fileName:
+                type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+        403:
+          description: file not exist!
+  /status/new/:
+    post:
+      tags:
+        - status
+      summary: post a statu
+      description: receive including and title 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: content and title
+          schema:
+            required:
+              - content
+              - title
+            properties:
+              content:
+                type: string
+              title:
+                type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /status/{sid}/:
+    get:
+      tags:
+        - status
+      summary: get information of statu
+      description: content title time like and user
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: sid
+          description: statu ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - title
+              - content
+              - time
+              - likeCount
+              - commentCount
+              - userID
+              - username
+              - commentList
+            properties:
+              title:
+                type: string
+              content:
+                type: string
+              time:
+                type: string
+              likeCount:
+                type: integer
+              commentCount:
+                type: integer
+              userID:
+                type: integer
+              username:
+                type: string
+              commentList:
+                type: array
+                items:
+                  required:
+                    - username
+                    - avatar
+                    - time
+                    - content
+                  properties:
+                    username:
+                      type: string
+                    avatar:
+                      type: string
+                    time:
+                      type: string
+                    content:
+                      type: string
+      security:
+      - token: []
+    delete:
+      tags:
+        - status
+      summary: delete a statu
+      description: delete
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: sid
+          description: status ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /status/list/:
+    get:
+      tags:
+        - status
+      summary: get a list of status
+      description: one page have 20 status
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: page
+          description: page number
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+          schema:
+            required:
+              - statuList
+            properties:
+              statuList:
+                type: array
+                items:
+                  required:
+                    - username
+                    - time
+                    - avatar
+                    - content
+                    - likeCount
+                    - commentCount
+                  properties:
+                    username:
+                      type: string
+                    time:
+                      type: string
+                    avatar:
+                      type: string
+                    content:
+                      type: string
+                    likeCount:
+                      type: integer
+                    commentCount:
+                      type: integer
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /status/{uid}/list/:
+    get:
+      tags:
+        - status
+      summary: get a list of one user status
+      description: one page have 20 status
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: page
+          description: page number
+          required: true
+          type: integer
+        - in: path
+          name: uid
+          description: user ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+#          headers:
+#            links:
+#              type: string
+#              description: next page & last page url
+          schema:
+            required:
+              - statuList
+            properties:
+              statuList:
+                type: array
+                items:
+                  required:
+                    - time
+                    - content
+                    - likeCount
+                    - commentCount
+                  properties:
+                    time:
+                      type: string
+                    content:
+                      type: string
+                    likeCount:
+                      type: integer
+                    commentCount:
+                      type: integer
+        401:
+          description: verify failed
+      security:
+      - token: []
+  /status/{sid}/comment/{cid}/:
+    get:
+      tags:
+        - status
+      summary: get information of a comment by id
+      description: get username,avatar,time,including
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: cid
+          description: comment id
+          required: true
+          type: integer
+        - in: path
+          name: sid
+          description: statu ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - username
+              - avatar
+              - time
+              - content
+            properties:
+              useranme:
+                type: string
+              avatar:
+                type: string
+              time:
+                type: string
+              content:
+                type: string
+        401:
+          description: verify failed
+        402:
+          description: can't find comment
+      security:
+      - token: []
+    delete:
+      tags:
+        - status
+      summary: delete a comment by id
+      description: admin
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: cid
+          description: comment id
+          required: true
+          type: integer
+        - in: path
+          name: sid
+          description: statu ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+        402:
+          description: can't find
+      security:
+      - token: []
+  /status/{sid}/comments/:
+    get:
+      tags:
+        - status
+      summary: get a list of statu
+      description: get
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: sid
+          description: statu ID
+          required: true
+          type: integer
+        - in: path
+          name: page
+          description: default=1
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          headers:
+            links:
+              type: string
+              description: next page & last page url
+          schema:
+            required:
+              - commentList
+            properties:
+              commentList:
+                type: array
+                items:
+                  required:
+                    - username
+                    - avatar
+                    - time
+                    - content
+                  properties:
+                    username:
+                      type: string
+                    avatar:
+                      type: string
+                    time:
+                      type: string
+                    content:
+                      type: string
+        401:
+          description: verify failed
+        402:
+          description: statu not found
+      security:
+      - token: []
+    post:
+      tags:
+        - status
+      summary: comment a statu
+      description: verify and post 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: sid
+          description: status ID
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: post a new comment
+          schema:
+            required:
+              - content
+            properties:
+              content:
+                type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+        402:
+          description: statu not found
+      security:
+      - token: []
+  /project/new/:
+    post:
+      tags:
+        - project
+      summary: build a new project
+      description: admin can build a project by this API
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: POSTdata
+          in: body
+          description: required information to post a new project
+          schema:
+            required:
+              - username
+              - projectname
+              - userlist
+            properties:
+              username:
+                type: string
+              projectname:
+                type: string
+              userlist:
+                type: array
+                items:
+                  required:
+                    - userID
+                    - userName
+                  properties:
+                    userID:
+                      type: integer
+                    userName:
+                      type: string
+              intro:
+                type: string
+      responses:
+        201:
+          description: OK
+        401:
+          description: verify failed
+        403:
+          description: insufficient permissions
+      security:
+      - token: []
+  /project/{pid}/member/:
+    get:
+      tags:
+        - project
+      summary: get a member list
+      description: get
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: projectID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - memberList
+            properties:
+              memberList:
+                type: array
+                items:
+                  required:
+                    - userID
+                    - username
+                    - avatar
+                  properties:
+                    userID:
+                      type: integer
+                    username:
+                      type: string
+                    avatar:
+                      type: string
+      security:
+      - token: []
+    put:
+      tags:
+        - project
+      summary: change the list of project members
+      description: get groupID and list ,and change it
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: projectID
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: userlist
+          schema:
+            required:
+              - userList
+            properties:
+              userList:
+                type: array
+                items:
+                  type: integer
+#                  required:
+#                    - userID
+#                  properties:
+#                    userID:
+#                      type: integer
+      responses:
+        200:
+          description: change it successfully
+        401:
+          description: verify failed     
+      security:
+      - token: []
+  /project/{pid}/:
+    get:
+      tags:
+        - project
+      summary: get the name & including of introduction
+      description: return a string
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: projectID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - intro
+              - name
+              - userCount
+            properties:
+              intro:
+                type: string
+              name:
+                type: string 
+              userCount:
+                type: integer 
+      security:
+      - token: []
+    delete:
+      tags:
+        - project
+      summary: delete a project
+      description: only superuser
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: projectID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: verify failed
+      security:
+      - token: []
+    post:
+      tags:
+        - project
+      summary: edit introduction & name
+      description: change introduction & name
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: pid
+          description: projectID
+          required: true
+          type: integer
+        - name: POSTdata
+          in: body
+          description: change including
+          schema:
+            required:
+              - intro
+              - name
+            properties:
+              intro:
+                type: string
+              name:
+                type: string
+      responses:
+        201:
+          description: edit successfully
+        401:
+          description: verify failed
+        403:
+          description: insufficient permissions
+      security:
+      - token: []
+
+########
+
+# FILE API WRITED BY CGH233
+
+  /search/:
+    post:
+      tags:
+        - search
+      summary: Search API
+      description: receive project and pattern
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: path
+          required: true
+          description: page number[defualt = 1]
+          type: integer
+        - name: POSTdata
+          in: body
+          description: include pattern and projectID [projectID == 0 means all]
+          schema:
+            required:
+              - pattern
+              - projectID
+            properties:
+              pattern:
+                type: string
+              projectID:
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            required:
+              - count
+              - pageMax
+              - pageNow
+              - hasNext
+              - list
+            properties:
+              count:
+                type: integer
+              pageMax:
+                type: integer
+              pageNow:
+                type: integer
+              hasNext:
+                type: boolean
+              list:
+                type: array
+                items:
+                  required:
+                    - kind
+                    - sourceID
+                    - recordName
+                    - projectID
+                    - projectName
+                    - creator
+                    - time
+                  properties:
+                    kind:
+                      type: integer
+                    sourceID:
+                      type: integer
+                    recordName:
+                      type: string
+                    projectID:
+                      type: integer
+                    projectName:
+                      type: string
+                    creator:
+                      type: string
+                    time:
+                      type: string
+        401:
+          description: verify failed
+      security:
+      - token: []
+
+########
+
+# DEFINITIONS
+definitions:
+  User:
+    required:
+      - id
+      - name
+      - email
+      - avatar
+      - tel
+      - role
+      - email_service
+      - message
+      - team_id
+      - group_id
+      - status
+      - receiveMsgs
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: username
+      email:
+        type: string
+        description: email address
+      avatar:
+        type: string
+        description: avatar url
+      tel:
+        type: string
+        description: telephone number
+      role:
+        type: integer
+        description: role,100->superuser
+      email_service:
+        type: boolean
+        description: open email_service or not
+      message:
+        type: boolean
+        description: receive message or not
+      team_id:
+        type: integer
+        description: foreign key of TEAM
+      group_id:
+        type: integer
+        description: foreign key of GROUP
+      status:
+        description: status
+      receiveMsgs: 
+        description: messages
+  Team:
+    required:
+      - id
+      - name
+      - count
+      - time
+      - creator
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: team name
+      count:
+        type: integer
+        description: member count
+      time:
+        type: string
+        description: time to create
+      creator:
+        type: integer
+        description: foreign key of who create the team
+  Group:
+    required:
+      - id
+      - name
+      - count
+      - leader
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: group name
+      count:
+        type: integer
+        description: member count
+      leader:
+        type: integer
+        description: foreign key of who lead this team in this year      
+  Project:
+    required:
+      - id
+      - name
+      - intro
+      - time
+      - count
+      - team_id
+      - files
+    properties:
+      id:
+        type: integer
+        description: primary key
+      name:
+        type: string
+        description: project name
+      intro:
+        type: string
+        description: project simple introduction
+      time:
+        type: string
+        description: when this project was created
+      count:
+        type: integer
+        description: user count
+      team_id:
+        type: integer
+        description: foreign key of TEAM
+      files:
+        description: files
+  User2Project:
+    required:
+      - id
+      - user_id
+      - project_id
+    properties:
+      id:
+        type: integer
+        description: primary key
+      user_id:
+        type: integer
+        description: foreign key of USER
+      projetc_id:
+        type: integer
+        description: foreign key of PROJECT
+  Statu:
+    required:
+      - id
+      - content
+      - time
+      - like
+      - comment
+      - user_id
+      - comments
+    properties:
+      id:
+        type: integer
+        description: primary key
+      content:
+        type: string
+        description: including of statu
+      time:
+        type: string
+        description: the time you post this statu
+      like:
+        type: string
+        description: the number your statu get LIKE!
+      comment:
+        type: string
+        description: the number your statu's comment
+      user_id:
+        type: integer
+        description: foreign key
+      comments:
+        description: comments
+  File:
+    required:
+      - id
+      - url
+      - path
+      - filename
+      - creator
+      - editor
+      - kind
+      - project_id
+      - comments
+    properties:
+      id:
+        type: integer
+        description: primary key
+      url:
+        type: string
+        description: URL of qiniu cloud
+      path:
+        type: string
+        description: file basedir
+      filename:
+        type: string
+        description: filename
+      creator:
+        type: integer
+        description: foreign key of this file's creator
+      editor:
+        type: integer
+        description: foreign key of this file lastest editor
+      kind:
+        type: integer
+        description: is file or status doc
+      project_id:
+        type: integer
+        description: foreign key of PROJECT
+      comments:
+        description: comments
+  Comment:
+    required:
+      - id
+      - kind
+      - content
+      - time
+      - creator
+      - file_id
+      - statu_id
+    properties:
+      id:
+        type: integer
+        description: primary key
+      kind:
+        type: integer
+        description: destination is file or statu  
+      content:
+        type: string
+        description: comment including
+      time:
+        type: string
+        description: post time
+      creator:
+        type: integer
+        description: foreign key of poster
+      file_id:
+        type: integer
+        description: if you comment FILE
+      statu_id:
+        type: integer
+        description: if you comment STATU
+  Message:
+    required:
+      - id
+      - time
+      - action
+      - kind
+      - readed
+      - from_id
+      - receive_id
+      - file_id
+      - statu_id
+      - comment_id
+    properties:
+      id:
+        type: integer
+        description: primary key
+      time:
+        type: string
+        description: birth time
+      action:
+        type: string
+        description: such as 'LIKE','COMMENT','UPLOAD'...
+      kind:
+        type: integer
+        description: FILE STATU or COMMENT
+      readed:
+        type: boolean
+        description: readed or not readed
+      from_id:
+        type: integer
+        description: foreign key of who make this message
+      receive_id:
+        type: integer
+        description: who will receive it 
+      file_id:
+        type: integer
+        description: if from file
+      statu_id:
+        type: integer
+        description: if from statu
+      comment_id:
+        type: integer
+        description: if from comment

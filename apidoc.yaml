@@ -2144,6 +2144,7 @@
             name: id
             type: integer
             description: which folder you want to change name
+            required: true
           - name: data
             in: body
             schema:
@@ -2174,6 +2175,7 @@
             name: id
             type: integer
             description: which folder you want to delete
+            required: true
           - name: data
             description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID，当前文件夹的id一起放到folder里边吧。
             in: body
@@ -2319,7 +2321,7 @@
         - token: []
         
 
-    /folder/doc/{id}/:    
+    /folder/doc/{id}/:
       put:
         tags:
           - file
@@ -2330,6 +2332,7 @@
             name: id
             type: integer
             description: which folder you want to change name
+            required: true
           - name: data
             in: body
             schema:
@@ -2360,6 +2363,7 @@
             name: id
             type: integer
             description: which folder you want to delete
+            required: true
           - name: data
             description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
             in: body
@@ -2392,9 +2396,10 @@
         description: get a folder for md
         parameters: 
           - in: path
-            name: fid
+            name: id
             type: integer
             description: which folder you want to get
+            required: true
           - name: data
             description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
             in: body
@@ -2473,7 +2478,7 @@
                 - project_id
               properties:
                 file:
-                  type: text/plain
+                  type: string
                   description: the file you want to uploda
                 project_id:
                   type: integer
@@ -2508,6 +2513,7 @@
             name: id
             type: integer
             description: which file you want to delete
+            required: true
         responses:
           200:
             description: delete
@@ -2574,6 +2580,7 @@
             name: id
             type: integer
             description: the doc you want to get
+            required: true
         responses:
           200:
             description: give the information of this doc
@@ -2618,6 +2625,7 @@
             name: id
             type: integer
             description: which doc you want to delete
+            required: true
         responses:
           200:
             description: delete
@@ -2636,8 +2644,10 @@
         description: update doc
         parameters:
           - in: path
-            name: mid
+            name: id
             description: id of doc
+            type: integer
+            required: true
           - name: data
             in: body
             schema:

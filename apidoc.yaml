@@ -2389,17 +2389,13 @@
             description: server error
         security:
         - token: []
+    /folder/doc/children/:
       post:
         tags:
           - file
         summary: API for get a folder for md
         description: get a folder for md
         parameters: 
-          - in: path
-            name: id
-            type: integer
-            description: which folder you want to get
-            required: true
           - name: data
             description: 详细信息看下一行的Model，传入两个列表，包含这个文件夹里的内容的ID。
             in: body

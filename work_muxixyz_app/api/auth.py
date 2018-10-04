@@ -11,7 +11,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 def signup():
     name = request.get_json().get('name')
     email = request.get_json().get('email')
-    # avatar = request.get_json().get('avatar')
+    avatar = request.get_json().get('avatar')
     tel = request.get_json().get('tel')
     usr = User.query.filter_by(name = name).first()
     usR = User.query.filter_by(email = email).first()

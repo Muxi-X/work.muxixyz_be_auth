@@ -57,6 +57,7 @@ def login():
         token = usr.generate_confirmation_token(usr)
         response = jsonify({
             "token": token,
+            "uid": usr.id,
         })
         response.status_code = 200
         return response

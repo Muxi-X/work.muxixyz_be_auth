@@ -125,9 +125,12 @@
             schema:
               required:
                 - token
+                - uid
               properties:
                 token:
                   type: string
+                uid:
+                  type: integer
     /group/new/:
       post:
         tags:

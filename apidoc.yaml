@@ -823,7 +823,60 @@
             description: verify failed
           403:
             description: other admin already refuse this one
-        
+    
+    /team/invite/:
+      get:
+        tags:
+          - management
+        summary: Get a hash_id of team id
+        description: get the request user's team id, and hash it, return it
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - hash_id
+              properties:
+                hash_id:
+                  type: string
+          401:
+            description: verify failed
+    
+    /team/getID/:
+      get:
+        tags:
+          - management
+        summary: resolve hash_id and get the team id
+        description: receive a string and unhash it, return it
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: hash_id
+            type: string
+            description: hash_id of team
+            required: true
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - teamID
+              properties:
+                teamID:
+                  type: integer
+          402:
+            description: resolve failed
+          403:
+            description: lack of parameter: hash_id
+
+
     /feed/new/:
       post:
         tags:

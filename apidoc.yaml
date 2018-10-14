@@ -611,7 +611,7 @@ paths:
           name: page
           description: page to get
           required: true
-          type: string
+          type: int
       responses:
         200:
           description: feed list
@@ -666,7 +666,7 @@ paths:
                       type: string                   
       security:
       - token: []
-  /feed/list/personal/{page}/:
+  /feed/list/{uesrid}/personal/{page}/:
     get:
       tags:
         - feed
@@ -680,7 +680,12 @@ paths:
           name: page
           description: page to get
           required: true
-          type: string
+          type: int
+         - in: path
+          name: userid
+          description: usxerid to get
+          required: true
+          type: int
       responses:
         200:
           description: feed list

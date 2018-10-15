@@ -601,7 +601,7 @@ paths:
     get:
       tags:
         - feed
-      summary: API for getting a list of feeds
+      summary: API for getting a list of feeds for a user
       description: KIND[0]status[1]project[2]doc[3]comments[4]team[5]user[6]file.get feed list.divider_id[0]status[1-n]projectid
       produces:
         - application/json

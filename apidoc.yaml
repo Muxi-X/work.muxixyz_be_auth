@@ -681,7 +681,7 @@ paths:
           description: page to get
           required: true
           type: int
-         - in: path
+        - in: path
           name: userid
           description: usxerid to get
           required: true

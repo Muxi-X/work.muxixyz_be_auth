@@ -1928,6 +1928,171 @@
                   type: string
           401:
             description: verify failed
+        security:
+        - token: []
+      delete:
+        tags:
+          - project
+        summary: delete a comment by id
+        description: admin
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: cid
+            description: comment id
+            required: true
+            type: integer
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: file ID
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+          401:
+            description: verify failed
+        security:
+        - token: []
+    /project/{pid}/doc/{fid}/comments/:
+      get:
+        tags:
+          - project
+        summary: get a list of comment
+        description: get
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: doc ID
+            required: true
+            type: integer
+          - in: path
+            name: page
+            description: default=1
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - commentList
+              properties:
+                commentList:
+                  type: array
+                  items:
+                    required:
+                      - username
+                      - avatar
+                      - time
+                      - content
+                    properties:
+                      username:
+                        type: string
+                      avatar:
+                        type: string
+                      time:
+                        type: string
+                      content:
+                        type: string
+          401:
+            description: verify failed
+        security:
+        - token: []
+      post:
+        tags:
+          - project
+        summary: comment a doc
+        description: verify and post 
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: doc ID
+            required: true
+            type: integer
+          - name: POSTdata
+            in: body
+            description: post a new comment
+            schema:
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+        responses:
+          201:
+            description: OK
+          401:
+            description: verify failed
+        security:
+        - token: []
+
+    /project/{pid}/file/{fid}/comment/{cid}/:
+      get:
+        tags:
+          - project
+        summary: get information of a comment by id
+        description: get username,avatar,time,including
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: cid
+            description: comment id
+            required: true
+            type: integer
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: file ID
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - username
+                - avatar
+                - time
+                - content
+              properties:
+                username:
+                  type: string
+                avatar:
+                  type: string
+                time:
+                  type: string
+                content:
+                  type: string
+          401:
+            description: verify failed
           402:
             description: can't find comment
         security:
@@ -1964,7 +2129,7 @@
             description: can't find
         security:
         - token: []
-    /project/{pid}/doc/{fid}/comments/:
+    /project/{pid}/file/{fid}/comments/:
       get:
         tags:
           - project
@@ -1991,10 +2156,6 @@
         responses:
           200:
             description: OK
-            headers:
-              links:
-                type: string
-                description: next page & last page url
             schema:
               required:
                 - commentList
@@ -2025,7 +2186,7 @@
       post:
         tags:
           - project
-        summary: comment a file or doc
+        summary: comment a file
         description: verify and post 
         consumes:
           - application/json
@@ -2039,7 +2200,7 @@
             type: integer
           - in: path
             name: fid
-            description: file or doc ID
+            description: file ID
             required: true
             type: integer
           - name: POSTdata
@@ -2056,10 +2217,9 @@
             description: OK
           401:
             description: verify failed
-          402:
-            description: project or file not found       
         security:
         - token: []
+
     /folder/filetree/<int:pid>/:
       get:
         tags:
@@ -2607,6 +2767,37 @@
         responses:
           200:
             description: delete
+          401:
+            description: forbidden
+          403:
+            description: method not allowed
+          500:
+            description: server error
+        security:
+        - token: []
+      put:
+        tags:
+          - file
+        summary: the API to update file
+        description: update file
+        parameters:
+          - in: path
+            name: id
+            description: id of file
+            type: integer
+            required: true
+          - name: data
+            in: body
+            schema:
+              required:
+                - FileName
+              properties:
+                DocName:
+                  type: string
+                  description: the name which you will use
+        responses:
+          200:
+            description: change it
           401:
             description: forbidden
           403:

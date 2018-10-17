@@ -125,9 +125,12 @@
             schema:
               required:
                 - token
+                - uid
               properties:
                 token:
                   type: string
+                uid:
+                  type: integer
     /group/new/:
       post:
         tags:
@@ -670,12 +673,15 @@
             schema:
               required:
                 - name
+                - avatar
                 - email
                 - tel
                 - email_service
                 - message
               properties:
                 name:
+                  type: string
+                avatar:
                   type: string
                 email:
                   type: string
@@ -731,6 +737,35 @@
             description: verify failed
         security:
         - token: []
+    /user/uploadAvatar/:
+      post:
+        tags:
+          - management
+        summary: upload a image and get a url,and set new url
+        description: receive a image upload it to qiniu, and get a url,set it on database and return it
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - name: image
+            in: body
+            required: true
+            description: a image file
+            type: string
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - url
+              properties:
+                url:
+                  type: string
+          401:
+            description: verify failed
+          403:
+            description: upload failed
         
     /team/applyList/:
       get:
@@ -788,7 +823,60 @@
             description: verify failed
           403:
             description: other admin already refuse this one
-        
+    
+    /team/invite/:
+      get:
+        tags:
+          - management
+        summary: Get a hash_id of team id
+        description: get the request user's team id, and hash it, return it
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - hash_id
+              properties:
+                hash_id:
+                  type: string
+          401:
+            description: verify failed
+    
+    /team/getID/:
+      get:
+        tags:
+          - management
+        summary: resolve hash_id and get the team id
+        description: receive a string and unhash it, return it
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: hash_id
+            type: string
+            description: hash_id of team
+            required: true
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - teamID
+              properties:
+                teamID:
+                  type: integer
+          402:
+            description: resolve failed
+          403:
+            description: lack of parameter: hash_id
+
+
     /feed/new/:
       post:
         tags:
@@ -933,6 +1021,8 @@
                     required:
                       - sourceKind
                       - sourceID
+                      - projectName
+                      - projectID
                       - fromName
                       - fromAvatar
                       - action
@@ -942,6 +1032,10 @@
                       sourceKind:
                         type: integer
                       sourceID:
+                        type: integer
+                      projectName:
+                        type: string
+                      projectID:
                         type: integer
                       fromName:
                         type: string

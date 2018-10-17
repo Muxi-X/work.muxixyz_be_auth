@@ -873,8 +873,7 @@
                   type: integer
           402:
             description: resolve failed
-          403:
-            description: lack of parameter: hash_id
+
 
 
     /feed/new/:

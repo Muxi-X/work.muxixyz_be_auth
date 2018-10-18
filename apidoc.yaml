@@ -2018,6 +2018,7 @@
             description: verify failed
         security:
         - token: []
+    /project/{pid}/doc/{fid}/comments/:
       post:
         tags:
           - project
@@ -2195,6 +2196,7 @@
             description: project or file not found
         security:
         - token: []
+    /project/{pid}/file/{fid}/comments/:
       post:
         tags:
           - project

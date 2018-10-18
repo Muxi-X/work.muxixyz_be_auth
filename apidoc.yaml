@@ -1959,7 +1959,7 @@
             description: verify failed
         security:
         - token: []
-    /project/{pid}/doc/{fid}/comments/:
+    /project/{pid}/doc/{fid}/comments/{page}/:
       get:
         tags:
           - project
@@ -1980,7 +1980,7 @@
             type: integer
           - in: path
             name: page
-            description: default=1
+            description: page
             required: true
             type: integer
         responses:
@@ -2131,7 +2131,7 @@
             description: can't find
         security:
         - token: []
-    /project/{pid}/file/{fid}/comments/:
+    /project/{pid}/file/{fid}/comments/{page}/:
       get:
         tags:
           - project
@@ -2152,7 +2152,7 @@
             type: integer
           - in: path
             name: page
-            description: default=1
+            description: page
             required: true
             type: integer
         responses:

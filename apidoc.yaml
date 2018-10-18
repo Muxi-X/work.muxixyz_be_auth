@@ -1989,6 +1989,7 @@
             schema:
               required:
                 - commentList
+                - count
               properties:
                 commentList:
                   type: array
@@ -2010,6 +2011,9 @@
                         type: string
                       id:
                         type: integer
+                count:
+                  type: integer
+                  description: 一共有多少条评论（所以有多少页你要自己算哦）
           401:
             description: verify failed
         security:
@@ -2182,6 +2186,9 @@
                         type: string
                       id:
                         type: integer
+                count:
+                  type: integer
+                  description: 一共有多少条评论（所以有多少页你要自己算哦）
           401:
             description: verify failed
           402:

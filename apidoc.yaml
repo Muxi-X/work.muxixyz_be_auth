@@ -1748,6 +1748,8 @@
                       - userID
                       - username
                       - avatar
+                      - group
+                      - role
                     properties:
                       userID:
                         type: integer
@@ -1755,6 +1757,10 @@
                         type: string
                       avatar:
                         type: string
+                      group:
+                        type: string
+                      role:
+                        type: integer
         security:
         - token: []
       put:

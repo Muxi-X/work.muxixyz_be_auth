@@ -2973,7 +2973,7 @@
             description: server error
         security:
         - token: []
-    /project/re/:
+    /project/<int:id>/re/:
       get:
         tags:
           - file
@@ -2982,7 +2982,7 @@
         parameters: 
           - name: id
             description: project 的ID
-            in: body
+            in: path
             schema:
               required:
                 - id
@@ -3051,6 +3051,8 @@
             description: server error
         security:
         - token: []
+
+    /project/re/:
       put:
         tags:
           - file

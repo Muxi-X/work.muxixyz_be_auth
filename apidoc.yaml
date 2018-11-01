@@ -3051,8 +3051,6 @@
             description: server error
         security:
         - token: []
-
-    /project/re/:
       put:
         tags:
           - file

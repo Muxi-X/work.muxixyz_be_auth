@@ -58,6 +58,7 @@ def login():
         response = jsonify({
             "token": token,
             "uid": usr.id,
+            "urole": usr.role,
         })
         response.status_code = 200
         return response

@@ -126,10 +126,13 @@
               required:
                 - token
                 - uid
+                - urole
               properties:
                 token:
                   type: string
                 uid:
+                  type: integer
+                urole:
                   type: integer
     /group/new/:
       post:

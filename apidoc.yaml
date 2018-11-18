@@ -126,13 +126,10 @@
               required:
                 - token
                 - uid
-                - urole
               properties:
                 token:
                   type: string
                 uid:
-                  type: integer
-                urole:
                   type: integer
     /group/new/:
       post:
@@ -912,6 +909,7 @@
             description: feed add successfully
         security:
         - token: []
+        
     /feed/list/:
       get:
         tags:
@@ -934,25 +932,9 @@
                 type: string
                 description: next page & last page url
             schema:
-              type: array
-              items:
-                required:
-                  - creator
-                  - time
-                  - action
-                  - kind
-                  - sourceID
-                properties:
-                  creator:
-                    type: string
-                  time:
-                    type: string
-                  action:
-                    type: string
-                  kind:
-                    type: integer
-                  sourceID:
-                    type: integer
+              type: object
+              $ref: '#/definitions/FeedRETURN'
+              
         security:
         - token: []
     /message/new/:
@@ -1751,8 +1733,6 @@
                       - userID
                       - username
                       - avatar
-                      - group
-                      - role
                     properties:
                       userID:
                         type: integer
@@ -1760,10 +1740,6 @@
                         type: string
                       avatar:
                         type: string
-                      group:
-                        type: string
-                      role:
-                        type: integer
         security:
         - token: []
       put:
@@ -2976,7 +2952,7 @@
             description: server error
         security:
         - token: []
-    /project/<int:id>/re/:
+    /project/re/:
       get:
         tags:
           - file
@@ -2985,7 +2961,7 @@
         parameters: 
           - name: id
             description: project 的ID
-            in: path
+            in: body
             schema:
               required:
                 - id
@@ -3123,6 +3099,61 @@
   
   # DEFINITIONS
   definitions:
+  
+    FeedRETURN:
+      properties:
+        datalist:
+          type: array
+          items: 
+            $ref: '#/definitions/FeedRetMeta'
+            
+    
+    FeedRetMeta:
+      properties:
+        source:
+          type: object
+          $ref: '#/definitions/FeedSource'
+        user:
+          type: object
+          $ref: '#/definitions/FeedUser'
+        action:
+          type: string
+        feedid: 
+          type: integer
+        ifsplit:
+          type: boolean
+        timeday:
+          type: string
+        timehm:
+          type: string
+        
+        
+    FeedSource:
+      properties:
+        kind_id:
+          type: integer
+        object_id:
+          type: integer
+        object_name:
+          type: string
+        project_id:
+          type: integer
+        project_name:
+          type: string
+        
+    FeedUser:
+      properties:
+        avater_url: 
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+            
+          
+          
+          
+  
     User:
       required:
         - id
@@ -3518,4 +3549,4 @@
           description: foreign key for File
         file_kind:
           type: integer
-          description: 0 for doc, 1 for file
+          description: 0 for doc, 1 for file⏎   

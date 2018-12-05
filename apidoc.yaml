@@ -115,9 +115,9 @@
             description: data to mark who want a token
             schema:
               required:
-                - username
+                - name
               properties:
-                username:
+                name:
                   type: string
         responses:
           200:

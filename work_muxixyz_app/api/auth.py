@@ -45,7 +45,7 @@ def signup():
 
 @api.route('/auth/login/', methods = ['POST'])
 def login():
-    usrname = request.get_json().get('username')
+    usrname = request.get_json().get('name')
     usr = User.query.filter_by(name = usrname).first()
     if usr is None:
         response = jsonify({

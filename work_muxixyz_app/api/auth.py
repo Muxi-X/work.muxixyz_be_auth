@@ -64,7 +64,7 @@ def login():
         response.status_code = 401
         return response
     else:
-        token = usr.generate_confirmation_token(usr)
+        token = usr.generate_confirmation_token()
         response = jsonify({
             "token": token,
             "uid": usr.id,

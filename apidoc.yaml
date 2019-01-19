@@ -829,7 +829,7 @@
         tags:
           - management
         summary: Get a hash_id of team id
-        description: get the request user's team id, and hash it, return it
+        description: get the request user's team id, and hash it, return url to prase
         consumes:
           - application/json
         produces:
@@ -839,14 +839,16 @@
             description: OK
             schema:
               required:
-                - hash_id
+                - invite_url
               properties:
+                invite_url:
+                  type: string
                 hash_id:
                   type: string
           401:
             description: verify failed
     
-    /team/getID/:
+    /team/invite/:
       get:
         tags:
           - management

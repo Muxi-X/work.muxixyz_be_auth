@@ -8,8 +8,8 @@ from flask import current_app
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=True)
-    email = db.Column(db.String(35), unique=True)
+    name = db.Column(db.String(20))
+    email = db.Column(db.String(35))
     avatar = db.Column(db.String(50))
     tel = db.Column(db.String(15))
     role = db.Column(db.Integer, default=0)

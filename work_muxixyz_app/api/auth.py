@@ -14,6 +14,8 @@ AVATARALL = 14
 @api.route('/auth/signup/', methods = ['POST'])
 def signup():
     name = request.get_json().get('name')
+    if name == "":
+        return jsonify({"msg": "username can't be empty string"}), 402
     email = request.get_json().get('email')
     avatar = request.get_json().get('avatar')
     tel = request.get_json().get('tel')

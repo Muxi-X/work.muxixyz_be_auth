@@ -1,5 +1,5 @@
 import time
-from . import db, login_manager
+from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
@@ -9,7 +9,7 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
-    email = db.Column(db.String(35))
+    email = db.Column(db.String(35), unique=True)
     avatar = db.Column(db.String(50))
     tel = db.Column(db.String(15))
     role = db.Column(db.Integer, default=0)

@@ -53,12 +53,10 @@ def signup():
         response.status_code = 401
         return response
 
-@api.route('/auth/login/', methods = ['POST'])
+@api.route('/auth/login/', methods=['POST'])
 def login():
     usrname = request.get_json().get('name')
-    usr = User.query.filter_by(name = usrname).first()
-    if usr.avatar is None:
-        usr.avatar = AVATARURL.format((usr.id%AVATARALL) + 1)
+    usr = User.query.filter_by(email=usrname).first()
     if usr is None:
         response = jsonify({
             "msg": 'user not existed!',
@@ -66,6 +64,10 @@ def login():
         response.status_code = 401
         return response
     else:
+        if usr.avatar is None:
+            usr.avatar = AVATARURL.format((usr.id % AVATARALL) + 1)
+            db.session.add(usr)
+            db.session.commit()
         token = usr.generate_confirmation_token()
         response = jsonify({
             "token": token,

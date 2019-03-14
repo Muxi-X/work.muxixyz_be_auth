@@ -19,26 +19,25 @@ def signup():
     email = request.get_json().get('email')
     avatar = request.get_json().get('avatar')
     tel = request.get_json().get('tel')
-    usr = User.query.filter_by(name = name).first()
-    usR = User.query.filter_by(email = email).first()
-    if (usr is None) and (usR is None):
+    usr = User.query.filter_by(email=email).first()
 
+    if usr is None:
         usr = User(
-                name = name,
-                email = email,
-                tel = tel
+                name=name,
+                email=email,
+                tel=tel
             )
         db.session.add(usr)
         db.session.commit()
-        usr = User.query.filter_by(name = name).first()
+        usr = User.query.filter_by(email=email).first()
         # 用户默认avatar
         usr.avatar = AVATARURL.format((usr.id%AVATARALL) + 1)
 
-        record = Apply(user_id = usr.id)
+        record = Apply(user_id=usr.id)
         db.session.add(record)
         db.session.commit()
-        if Team.query.filter_by(id = 1).first() is None:
-            muxi = Team(name = "muxi", count = 0, creator = 1)
+        if Team.query.filter_by(id=1).first() is None:
+            muxi = Team(name="muxi", count=0, creator=1)
             db.session.add(muxi)
             db.session.commit()
         response = jsonify({
@@ -55,8 +54,8 @@ def signup():
 
 @api.route('/auth/login/', methods=['POST'])
 def login():
-    usrname = request.get_json().get('name')
-    usr = User.query.filter_by(email=usrname).first()
+    user_email = request.get_json().get('email')
+    usr = User.query.filter_by(email=user_email).first()
     if usr is None:
         response = jsonify({
             "msg": 'user not existed!',

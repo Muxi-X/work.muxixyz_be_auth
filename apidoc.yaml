@@ -115,9 +115,9 @@
             description: data to mark who want a token
             schema:
               required:
-                - name
+                - email
               properties:
-                name:
+                email:
                   type: string
         responses:
           200:
@@ -126,11 +126,37 @@
               required:
                 - token
                 - uid
+                - urole
               properties:
                 token:
                   type: string
                 uid:
                   type: integer
+                urole:
+                  type: integer 
+    
+    
+     
+    /user/2bSuperuser/:
+      post:
+        tags:
+          - management
+        summary: create a superuser
+        description: get username and add it to superuser
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - name: name
+            in: body
+            description: username
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: ok
     /group/new/:
       post:
         tags:
@@ -162,9 +188,9 @@
                         type: integer
         responses:
           200:
-            description: OK
-          401:
-            description: verify failed
+            description: successful!
+          402:
+            description: user list is None!/ group name exist！
         security:
         - token: []
     /group/{gid}/:
@@ -183,11 +209,34 @@
             type: integer
         responses:
           200:
-            description: OK
-          401:
-            description: verify failed    
+            description: ok
         security:
         - token: []  
+    /group/<gid>/rename/:
+      post:
+        tags:
+          - management
+        summary: rename the group
+        description: get a new group name
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: gid
+            description: groupID
+            required: true
+            type: integer
+          - name: rename
+            in: body
+            description: a new group name
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: rename successful!
+          402:
+            description: rename is None/please keep group name unique
     /group/{gid}/userList/:
       get:
         tags:
@@ -202,34 +251,16 @@
             description: groupID
             required: true
             type: integer
-          - in: path
-            name: page
-            description: default=1
-            required: true
-            type: integer
         responses:
           200:
             description: user list
-            headers:
-              links:
-                type: string
-                description: next page & last page url
             schema:
               required: 
                 - count
-                - pageMax
-                - pageNow
-                - hasNext
                 - list
               properties:
                 count:
                   type: integer
-                pageMax:
-                  type: integer
-                pageNow:
-                  type: integer
-                hasNext:
-                  type: boolean
                 list:
                   type: array
                   items:
@@ -238,9 +269,10 @@
                       - username
                       - userID
                       - groupName
-                      - avatar
+                      - groupID
                       - role
                       - email
+                      - avatar
                     properties:
                       teamID:
                         type: integer
@@ -250,6 +282,8 @@
                         type: integer
                       groupName:
                         type: string
+                      groupID:
+                        type: integer
                       role:
                         type: integer
                       email:
@@ -290,7 +324,7 @@
         security:
         - token: []  
   
-    /group/{gid}/manageUser:
+    /group/{gid}/manageUser/:
       post:
         tags:
           - management
@@ -340,11 +374,6 @@
             description: projectID
             required: true
             type: integer
-          - in: path
-            name: page
-            description: page
-            required: true
-            type: integer
         responses:
           200:
             description: user list
@@ -352,16 +381,7 @@
               required:
                 - list
                 - count
-                - pageMax
-                - pageNow
-                - hasNext
               properties:
-                pageMax:
-                  type: integer
-                pageNow:
-                  type: integer
-                hasNext:
-                  type: boolean
                 count:
                   type: integer
                 list:
@@ -392,11 +412,6 @@
           - in: path
             name: uid
             description: user ID
-            required: true
-            type: integer
-          - in: path
-            name: page
-            description: page
             required: true
             type: integer
         responses:
@@ -456,8 +471,8 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
+          402:
+            description: Never give up yourself!
         security:
           - token: []
   
@@ -483,9 +498,7 @@
                   type: integer
         responses:
           200:
-            description: OK
-          401:
-            description: verify failed
+            description: successful!
           402:
             description: user already be a member
         security:
@@ -543,12 +556,33 @@
         responses:
           200:
             description: luckydog be a admin
-          403:
-            description: ddl
-          401:
-            description: auth fail
         security:
         - token: []
+    /user/delAdmin/:
+      post:
+        tags:
+          - management
+        summary: super user delete someone on admin list
+        description: verify token and delete a FK
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - name: POSTdata
+            in: body
+            description: who is the unlucky dog
+            schema:
+              required:
+                - unluckydog
+              properties:
+                luckydog:
+                  type: integer
+        responses:
+          200:
+            description: successful!
+        security:
+        - token: [] 
     /user/{uid}/managePro/:
       post:
         tags:
@@ -583,8 +617,6 @@
         responses:
           200:
             description: change it successfully
-          401:
-            description: verify failed
         security:
         - token: []  
     /user/{uid}/manageGroup/:
@@ -615,8 +647,6 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
         security:
         - token: []
     /user/{uid}/setRole/:
@@ -647,8 +677,6 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
         security:
         - token: []
     /user/{uid}/setting/:
@@ -673,19 +701,19 @@
             schema:
               required:
                 - name
-                - avatar
                 - email
                 - tel
+                - avatar
                 - email_service
                 - message
               properties:
                 name:
                   type: string
-                avatar:
-                  type: string
                 email:
                   type: string
                 tel:
+                  type: string
+                avatar:
                   type: string
                 email_service:
                   type: boolean
@@ -734,9 +762,11 @@
           200:
             description: OK
           401:
-            description: verify failed
-          403:
-            description: Username exist
+            description: this is others personal setting!
+          402:
+            description: please ger yourself information!/username can't be a empty string
+          409:
+            description: Username has existed
         security:
         - token: []
     /user/uploadAvatar/:
@@ -752,9 +782,10 @@
         parameters:
           - name: image
             in: body
-            required: true
             description: a image file
-            type: string
+            required: true
+            schema:
+              type: string
         responses:
           200:
             description: OK
@@ -764,8 +795,6 @@
               properties:
                 url:
                   type: string
-          401:
-            description: verify failed
           403:
             description: upload failed
         
@@ -800,8 +829,8 @@
                         type: string
                       userEmail:
                         type: string
-          401:
-            description: verify failed
+          201:
+            description: Application all done!
     /team/apply/{uid}/:
       delete:
         tags:
@@ -820,9 +849,7 @@
             type: integer
         responses:
           200:
-            description: OK
-          401:
-            description: verify failed
+            description: Ok
           403:
             description: other admin already refuse this one
     
@@ -842,15 +869,14 @@
             schema:
               required:
                 - invite_url
+                - hash_id
               properties:
                 invite_url:
                   type: string
                 hash_id:
                   type: string
-          401:
-            description: verify failed
     
-    /team/invite/:
+    /team/invite/{hash_id}/:
       get:
         tags:
           - management
@@ -877,44 +903,12 @@
                   type: integer
           402:
             description: resolve failed
+   
 
 
 
-    /feed/new/:
-      post:
-        tags:
-          - feed
-        summary: Add the events in the exchange
-        description: KIND[1]process[2]file[3]comments[4]team. Create a events and send it to the exchange, and queue
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - name: POSTdata
-            in: body
-            description: data to create a event
-            schema:
-              required:
-                - action
-                - kind
-                - sourceID
-              properties:
-                from:
-                  type: string
-                action:
-                  type: string
-                kind:
-                  type: integer
-                sourceID:
-                  type: integer
-        responses:
-          200:
-            description: feed add successfully
-        security:
-        - token: []
-        
-    /feed/list/:
+   
+    /feed/list/{page}/:
       get:
         tags:
           - feed
@@ -931,22 +925,255 @@
         responses:
           200:
             description: feed list
-            headers:
-              links:
-                type: string
-                description: next page & last page url
             schema:
-              type: object
-              $ref: '#/definitions/FeedRETURN'
-              
+              required: 
+                - dataList
+                - hasNext
+                - pageMax
+                - pageNum
+                - rowsNum
+              properties:
+                dataList:
+                  type: array
+                  items:
+                    required:
+                      - user
+                      - acton
+                      - source
+                      - time
+                      - split
+                    properties:
+                      user:
+                        type: array
+                        items:
+                          required:
+                            - name
+                            - id
+                            - avatar_url
+                          properties:
+                            name:
+                              type: string
+                            id:
+                              type: integer
+                            avatar_url:
+                              type: string
+                      acton:
+                        type: string
+                      source:
+                        type: array
+                        items:
+                          required:
+                            - kind_id
+                            - object_id
+                            - project_id
+                            - name
+                          properties:
+                            kind_id:
+                              type: integer
+                            object_id:
+                              type: integer
+                            project_id:
+                              type: integer
+                              description: 没有为-1
+                            name: 
+                              type: string
+                      time:
+                        type: string
+                        description: "yyyy-mm-dd-HH:MM:SS"
+                      split:
+                        type: boolean
+                hasNext:
+                  type: boolean
+                pageMax: 
+                  type: integer
+                pageNum: 
+                  type: integer
+                rowsNum: 
+                  type: integer
+          401:
+            description: none
+          404:
+            description: none
         security:
         - token: []
-    /message/new/:
+        
+    /feed/list/{userid}/personal/{page}/:
+      get:
+        tags:
+          - feed
+        summary: API for getting a list of personal feeds
+        description: Use mq's receive service to get feed from different queue.
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: userid
+            required: true
+            type: integer
+          - in: path
+            name: page
+            description: page to get
+            required: true
+            type: string
+        responses:
+          200:
+            description: feed list
+            schema:
+              required: 
+                - dataList
+                - hasNext
+                - pageMax
+                - pageNum
+                - rowsNum
+              properties:
+                dataList:
+                  type: array
+                  items:
+                    required:
+                      - user
+                      - acton
+                      - source
+                      - time
+                      - split
+                    properties:
+                      user:
+                        type: array
+                        items:
+                          required:
+                            - name
+                            - id
+                            - avatar_url
+                          properties:
+                            name:
+                              type: string
+                            id:
+                              type: integer
+                            avatar_url:
+                              type: string
+                      acton:
+                        type: string
+                      source:
+                        type: array
+                        items:
+                          required:
+                            - kind_id
+                            - object_id
+                            - project_id
+                            - name
+                          properties:
+                            kind_id:
+                              type: integer
+                            object_id:
+                              type: integer
+                            project_id:
+                              type: integer
+                              description: 没有为-1
+                            name: 
+                              type: string
+                      time:
+                        type: string
+                        description: "yyyy-mm-dd-HH:MM:SS"
+                      split:
+                        type: boolean
+                hasNext:
+                  type: boolean
+                pageMax: 
+                  type: integer
+                pageNum: 
+                  type: integer
+                rowsNum: 
+                  type: integer
+          401:
+            description: role is nobody
+          404:
+            description: no user has this id 
+        security:
+        - token: []
+        
+        
+
+    /user/attention/:
       post:
         tags:
           - message
-        summary: Make a new message to user.
-        description: KIND[1]process[2]file[3]comments[4]team. Create a events and send it to the exchange, and queue
+        summary: post and you will pay attention to file or doc
+        description: receive a fileID and add it to attention list
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - name: postData
+            in: body
+            description: file ID
+            schema:
+              required: 
+                - fileID
+                - fileKind
+              properties:
+                fileID:
+                  type: integer
+                fileKind:
+                  type: integer
+        responses:
+          200:
+            description: successful
+          402:
+            description: file not found! / file kind not find! / You already pay attention to this file!
+        security:
+        - token: []     
+     
+      get:
+        tags:
+          - message
+        summary: get a list of user attenting file
+        description: receive a token and return a list of file
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - list
+              properties:
+                list:
+                  type: array
+                  items:
+                    required:
+                      - url
+                      - fileID
+                      - fileKind
+                      - fileName
+                      - username
+                      - projectID
+                      - projectName
+                      - date
+                    properties:
+                      url:
+                        type: string
+                      fileID:
+                        type: integer
+                      fileKind:
+                        type: integer
+                      fileName:
+                        type: string
+                      username:
+                        type: string
+                      prijectId:
+                        type: integer
+                      projectName:
+                        type: string
+                      date:
+                        type: string
+      
+      delete:
+        tags:
+          - message
+        summary: post a filename and delete it
+        description: find FILE in database and delete attention
         consumes:
           - application/json
         produces:
@@ -954,30 +1181,20 @@
         parameters:
           - name: POSTdata
             in: body
-            description: data to make a message
+            description: filename
             schema:
               required:
-                - receiver
-                - maker
-                - action
-                - sourceID
-                - sourceKind
+                - fileName
+                - fileKind
               properties:
-                receiver:
+                fileName:
                   type: string
-                maker:
-                  type: string
-                action:
-                  type: string
-                sourceID:
-                  type: integer
-                sourceKind:
-                  type: integer
         responses:
           200:
-            description: message add successfully
-        security:
-        - token: []
+            description: OK
+          403:
+            description: file not exist!
+    
     /message/list/:
       get:
         tags:
@@ -1009,7 +1226,6 @@
                     required:
                       - sourceKind
                       - sourceID
-                      - projectName
                       - projectID
                       - fromName
                       - fromAvatar
@@ -1021,8 +1237,6 @@
                         type: integer
                       sourceID:
                         type: integer
-                      projectName:
-                        type: string
                       projectID:
                         type: integer
                       fromName:
@@ -1035,8 +1249,11 @@
                         type: string
                       readed:
                         type: boolean
+          401:
+            description: from user is gone.
         security:
-        - token: []
+        - token: []      
+        
     /message/readAll/:
       post:
         tags:
@@ -1047,27 +1264,12 @@
           - application/json
         produces:
           - application/json
-        parameters:
-          - name: POSTdata
-            in: body
-            description: username
-            schema:
-              required:
-                - username
-              properties:
-                username:
-                  type: string
         responses:
           200:
             description: OK
-            headers:
-              links:
-                type: string
-                description: next page & last page url
-          401:
-            description: verify failed
         security:
         - token: []
+        
     /message/{username}/{mid}/:
       get:
         tags:
@@ -1118,99 +1320,10 @@
           403:
             description: message isn't exist
         security:
-        - token: []
-    /user/attention/:
-      get:
-        tags:
-          - message
-        summary: get a list of user attenting file
-        description: receive a token and return a list of file
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        responses:
-          200:
-            description: OK
-            schema:
-              required:
-                - list
-              properties:
-                list:
-                  type: array
-                  items:
-                    required:
-                      - fileName
-                      - projectName
-                      - username
-                      - date
-                    properties:
-                      filename:
-                        type: string
-                      username:
-                        type: string
-                      projectName:
-                        type: string
-                      date:
-                        type: string
-      post:
-        tags:
-          - message
-        summary: post and you will pay attention to file or doc
-        description: receive a fileID and add it to attention list
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - name: postData
-            in: body
-            description: file ID
-            schema:
-              required: 
-                - fileID
-                - fileKind
-              properties:
-                fileID:
-                  type: integer
-                fileKind:
-                  type: integer
-        responses:
-          200:
-            description: OK
-          401:
-            description: verify failed 
-          402:
-            description: file not found!
-        security:
-        - token: []
-      delete:
-        tags:
-          - message
-        summary: post a filename and delete it
-        description: find FILE in database and delete attention
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - name: POSTdata
-            in: body
-            description: filename
-            schema:
-              required:
-                - fileName
-                - fileKind
-              properties:
-                fileName:
-                  type: string
-        responses:
-          200:
-            description: OK
-          401:
-            description: verify failed
-          403:
-            description: file not exist!
+        - token: []      
+       
+        
+            
     /status/new/:
       post:
         tags:
@@ -1237,10 +1350,9 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
         security:
         - token: []
+        
     /status/{sid}/:
       get:
         tags:
@@ -1260,6 +1372,7 @@
             description: OK
             schema:
               required:
+                - sid
                 - title
                 - content
                 - time
@@ -1269,16 +1382,20 @@
                 - username
                 - commentList
               properties:
+                sid:
+                  type: integer
                 title:
                   type: string
+                author_id:
+                  type: integer
                 content:
                   type: string
                 time:
                   type: string
                 likeCount:
                   type: integer
-                commentCount:
-                  type: integer
+                iflike:
+                  type: boolean
                 userID:
                   type: integer
                 username:
@@ -1287,11 +1404,14 @@
                   type: array
                   items:
                     required:
+                      - cid
                       - username
                       - avatar
                       - time
                       - content
                     properties:
+                      cid:
+                        type: integer
                       username:
                         type: string
                       avatar:
@@ -1302,6 +1422,26 @@
                         type: string
         security:
         - token: []
+      
+      put:
+        tags:
+          - status
+        summary: edit a statu
+        description: edit
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: sid
+            description: status ID
+            required: true
+            type: integer
+        responses:
+          200:
+            description: statu edit successfully
+        security:
+        - token: []
+      
       delete:
         tags:
           - status
@@ -1318,11 +1458,12 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
+          402:
+            description: the statu has already been deleted
         security:
         - token: []
-    /status/list/:
+        
+    /status/list/{page}:
       get:
         tags:
           - status
@@ -1339,42 +1480,55 @@
         responses:
           200:
             description: OK
-            headers:
-              links:
-                type: string
-                description: next page & last page url
             schema:
               required:
                 - statuList
+                - page
+                - count
               properties:
                 statuList:
                   type: array
                   items:
                     required:
+                      - sid
                       - username
+                      - uid
                       - time
                       - avatar
+                      - title
                       - content
                       - likeCount
+                      - iflike
                       - commentCount
                     properties:
+                      sid:
+                        type: integer
                       username:
                         type: string
+                      uid:
+                        type: integer
                       time:
                         type: string
                       avatar:
+                        type: string
+                      title:
                         type: string
                       content:
                         type: string
                       likeCount:
                         type: integer
+                      iflike:
+                        type: boolean
                       commentCount:
                         type: integer
-          401:
-            description: verify failed
+                page: 
+                  type: integer
+                count: 
+                  type: integer
         security:
         - token: []
-    /status/{uid}/list/:
+        
+    /status/{uid}/list/{page}/:
       get:
         tags:
           - status
@@ -1396,10 +1550,6 @@
         responses:
           200:
             description: OK
-  #          headers:
-  #            links:
-  #              type: string
-  #              description: next page & last page url
             schema:
               required:
                 - statuList
@@ -1408,146 +1558,64 @@
                   type: array
                   items:
                     required:
+                      - sid
                       - time
                       - content
                       - likeCount
+                      - iflike
                       - commentCount
                     properties:
+                      sid:
+                        type: integer
                       time:
                         type: string
                       content:
                         type: string
                       likeCount:
                         type: integer
+                      iflike:
+                        type: boolean
                       commentCount:
                         type: integer
-          401:
-            description: verify failed
+                page: 
+                  type: integer
+                count:
+                  type: integer
         security:
         - token: []
-    /status/{sid}/comment/{cid}/:
-      get:
+    /status/{sid}/like/:
+      put:
         tags:
           - status
-        summary: get information of a comment by id
-        description: get username,avatar,time,including
+        summary: comment a statu
+        description: verify and post 
+        consumes:
+          - application/json
         produces:
           - application/json
         parameters:
           - in: path
-            name: cid
-            description: comment id
-            required: true
-            type: integer
-          - in: path
             name: sid
-            description: statu ID
+            description: status ID
             required: true
             type: integer
-        responses:
-          200:
-            description: OK
+          - name: POSTdata
+            in: body
+            description: post a new comment
             schema:
               required:
-                - username
-                - avatar
-                - time
-                - content
+                - iflike
               properties:
-                useranme:
-                  type: string
-                avatar:
-                  type: string
-                time:
-                  type: string
                 content:
-                  type: string
-          401:
-            description: verify failed
-          402:
-            description: can't find comment
-        security:
-        - token: []
-      delete:
-        tags:
-          - status
-        summary: delete a comment by id
-        description: admin
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: cid
-            description: comment id
-            required: true
-            type: integer
-          - in: path
-            name: sid
-            description: statu ID
-            required: true
-            type: integer
+                  type: boolean
+                  description: 0 - don't like  1 - like 
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
-          402:
-            description: can't find
         security:
         - token: []
+        
     /status/{sid}/comments/:
-      get:
-        tags:
-          - status
-        summary: get a list of statu
-        description: get
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: sid
-            description: statu ID
-            required: true
-            type: integer
-          - in: path
-            name: page
-            description: default=1
-            required: true
-            type: integer
-        responses:
-          200:
-            description: OK
-            headers:
-              links:
-                type: string
-                description: next page & last page url
-            schema:
-              required:
-                - commentList
-              properties:
-                commentList:
-                  type: array
-                  items:
-                    required:
-                      - username
-                      - avatar
-                      - time
-                      - content
-                    properties:
-                      username:
-                        type: string
-                      avatar:
-                        type: string
-                      time:
-                        type: string
-                      content:
-                        type: string
-          401:
-            description: verify failed
-          402:
-            description: statu not found
-        security:
-        - token: []
       post:
         tags:
           - status
@@ -1575,12 +1643,38 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
-          402:
-            description: statu not found
+          405:
+            description: the statu is already deleted
         security:
         - token: []
+        
+    /status/{sid}/comment/{cid}/:
+      delete:
+        tags:
+          - status
+        summary: delete a comment by id
+        description: admin
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: cid
+            description: comment id
+            required: true
+            type: integer
+          - in: path
+            name: sid
+            description: statu ID
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+          402:
+            description: can't find
+        security:
+        - token: []
+    
   
     /search/:
       post:
@@ -1615,11 +1709,11 @@
             description: OK
             schema:
               required:
+                - list
                 - count
                 - pageMax
                 - pageNow
                 - hasNext
-                - list
               properties:
                 count:
                   type: integer
@@ -1655,8 +1749,8 @@
                         type: string
                       time:
                         type: string
-          401:
-            description: verify failed
+          403:
+            description: projectmistake
         security:
         - token: []
 

@@ -1995,7 +1995,13 @@
                   type: string
         responses:
           201:
-            description: OK
+            description: return cid
+            schema:
+              required: 
+                - cid
+              properties:
+                cid:
+                  type: integer
           404:
             description: errmsg
         security:
@@ -2220,7 +2226,13 @@
                   type: string
         responses:
           201:
-            description: cid
+            description: return cid
+            schema:
+              required: 
+                - cid
+              properties:
+                cid:
+                  type: integer
           404:
             description: errmsg
         security:
@@ -2455,8 +2467,6 @@
                   description: the id of the folder you create
           401:
             description: forbidden
-          403:
-            description: method not allowed
           500:
             description: server error
         security:
@@ -2489,10 +2499,8 @@
             description: update
           401:
             description: forbidden
-          403:
-            description: method not allowed
           500:
-            description: server error
+            description: errmsg
         security:
         - token: []
       delete:
@@ -2525,10 +2533,8 @@
             description: delete
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 
@@ -2582,7 +2588,6 @@
                     required:
                       - id
                       - name
-                      - lasteditor
                       - creator
                       - url
                       - create_time
@@ -2604,10 +2609,8 @@
                         description: the create_time
           401:  
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 
@@ -2643,10 +2646,8 @@
                   description: the id of the folder you create
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
         
@@ -2673,14 +2674,12 @@
                   type: string
                   description: the name you will change for folder for file
         responses:
-          201:
+          200:
             description: update
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
       delete:
@@ -2713,10 +2712,8 @@
             description: delete
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
     /folder/doc/children/:
@@ -2782,10 +2779,42 @@
                         description: 最新内容可以用来做封面
           401:  
             description: forbidden
-          403:
-            description: method not allowed
+          404:
+            description: errmsg
+        security:
+        - token: []
+        
+    /editor/image/:
+      post:
+        tags:
+          - file
+        summary: editor upload image
+        description: upload image in editor
+        parameters:
+          - name: data
+            in: body
+            schema:
+              required:
+                - file
+                - project_id
+              properties:
+                file:
+                  type: string
+                  description: the file you want to uploda
+                project_id:
+                  type: integer
+                  description: which project this file belong to
+        responses:
+          200:
+            description: return image url
+            schema:
+              required:
+                - image_url
+              properties:
+                image_url:
+                  type: string
           500:
-            description: server error
+            description: errmsg
         security:
         - token: []
 
@@ -2821,10 +2850,8 @@
                   description: the id of the file you create
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 
@@ -2845,10 +2872,8 @@
             description: delete
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
       put:
@@ -2876,10 +2901,8 @@
             description: change it
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 
@@ -2894,7 +2917,7 @@
             in: body
             schema:
               required:
-                - DocName
+                - mdname
                 - content
                 - project_id
               properties:
@@ -2919,10 +2942,8 @@
                   description: the id of the md you create
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 
@@ -2966,10 +2987,8 @@
                   description: the create_time
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
           - token: []
       delete:
@@ -2988,10 +3007,8 @@
             description: delete
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
       put:
@@ -3023,29 +3040,23 @@
             description: change it
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
-    /project/re/:
+        
+    /project/{id}/re/:
       get:
         tags:
           - file
         summary: API for get re
         description: get re
         parameters: 
-          - name: id
+          - in: path
+            name: id
             description: project 的ID
-            in: body
-            schema:
-              required:
-                - id
-              properties:
-                id:
-                  type: integer
-                  description: 项目的ID
+            required: true
+            type: integer
         responses:
           200:
             description: get it
@@ -3061,10 +3072,10 @@
                     required:
                       - id
                       - name
-                      - lasteditor
                       - creator
                       - url
                       - create_time
+                      - delete_time
                     properties:
                       id:
                         type: integer
@@ -3081,7 +3092,10 @@
                       create_time:
                         type: string
                         description: the create_time
-                DocList:
+                      delete_time:
+                        type: string
+                        description: the delete_time
+                FolderList:
                   type: array
                   description: children md of this folder
                   items:
@@ -3101,10 +3115,8 @@
                         description: 最新内容可以用来做封面
           401:  
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
       put:
@@ -3112,7 +3124,12 @@
           - file
         summary: put back to the original position
         description: put back to the original position
-        parameters: 
+        parameters:
+          - in: path
+            name: id
+            description: project 的ID
+            required: true
+            type: integer
           - name: data
             description: 详细信息看下一行的Model，传入两个列表，包含要恢复的ID。
             in: body
@@ -3132,10 +3149,8 @@
             description: recover
           401:  
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
       delete:
@@ -3144,6 +3159,11 @@
         summary: really delete
         description: really delete
         parameters: 
+          - in: path
+            name: id
+            description: project 的ID
+            required: true
+            type: integer
           - name: data
             description: 详细信息看下一行的Model，传入两个列表，包含要删除的ID。
             in: body
@@ -3163,10 +3183,8 @@
             description: delete
           401:  
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 

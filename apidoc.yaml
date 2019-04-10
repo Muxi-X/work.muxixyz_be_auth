@@ -36,12 +36,11 @@
 
     - name: search
       description: 搜索服务 
-  
+    - name: project
+      description: 项目服务 
     - name: file
       description: 文件服务
 
-    - name: project
-      description: 项目服务 
   ### tag end ###
   
   ### auth start ###
@@ -1776,6 +1775,7 @@
                 - username
                 - projectname
                 - userlist
+                - intro
               properties:
                 username:
                   type: string
@@ -1786,96 +1786,16 @@
                   items:
                     required:
                       - userID
-                      - userName
                     properties:
                       userID:
                         type: integer
-                      userName:
-                        type: string
                 intro:
                   type: string
         responses:
           201:
             description: OK
-          401:
-            description: verify failed
-          403:
-            description: insufficient permissions
-        security:
-        - token: []
-    /project/{pid}/member/:
-      get:
-        tags:
-          - project
-        summary: get a member list
-        description: get
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: pid
-            description: projectID
-            required: true
-            type: integer
-        responses:
-          200:
-            description: OK
-            schema:
-              required:
-                - memberList
-              properties:
-                memberList:
-                  type: array
-                  items:
-                    required:
-                      - userID
-                      - username
-                      - avatar
-                    properties:
-                      userID:
-                        type: integer
-                      username:
-                        type: string
-                      avatar:
-                        type: string
-        security:
-        - token: []
-      put:
-        tags:
-          - project
-        summary: change the list of project members
-        description: get groupID and list ,and change it
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: pid
-            description: projectID
-            required: true
-            type: integer
-          - name: POSTdata
-            in: body
-            description: userlist
-            schema:
-              required:
-                - userList
-              properties:
-                userList:
-                  type: array
-                  items:
-                    type: integer
-  #                  required:
-  #                    - userID
-  #                  properties:
-  #                    userID:
-  #                      type: integer
-        responses:
-          200:
-            description: change it successfully
-          401:
-            description: verify failed     
+          404:
+            description: errmsg
         security:
         - token: []
     /project/{pid}/:
@@ -1907,6 +1827,8 @@
                   type: string 
                 userCount:
                   type: integer 
+          404:
+            description: errmsg
         security:
         - token: []
       delete:
@@ -1925,8 +1847,8 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
+          404:
+            description: errmsg
         security:
         - token: []
       post:
@@ -1959,111 +1881,23 @@
         responses:
           201:
             description: edit successfully
-          401:
-            description: verify failed
-          403:
-            description: insufficient permissions
+          404:
+            description: errmsg
         security:
         - token: []
-
-    /project/{pid}/doc/{fid}/comment/{cid}/:
+        
+    /project/{pid}/member/:
       get:
         tags:
           - project
-        summary: get information of a comment by id
-        description: get username,avatar,time,including
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: cid
-            description: comment id
-            required: true
-            type: integer
-          - in: path
-            name: pid
-            description: project ID
-            required: true
-            type: integer
-          - in: path
-            name: fid
-            description: file ID
-            required: true
-            type: integer
-        responses:
-          200:
-            description: OK
-            schema:
-              required:
-                - username
-                - avatar
-                - time
-                - content
-              properties:
-                username:
-                  type: string
-                avatar:
-                  type: string
-                time:
-                  type: string
-                content:
-                  type: string
-          401:
-            description: verify failed
-        security:
-        - token: []
-      delete:
-        tags:
-          - project
-        summary: delete a comment by id
-        description: admin
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: cid
-            description: comment id
-            required: true
-            type: integer
-          - in: path
-            name: pid
-            description: project ID
-            required: true
-            type: integer
-          - in: path
-            name: fid
-            description: file ID
-            required: true
-            type: integer
-        responses:
-          200:
-            description: OK
-          401:
-            description: verify failed
-        security:
-        - token: []
-    /project/{pid}/doc/{fid}/comments/{page}/:
-      get:
-        tags:
-          - project
-        summary: get a list of comment
+        summary: get a member list
         description: get
         produces:
           - application/json
         parameters:
           - in: path
             name: pid
-            description: project ID
-            required: true
-            type: integer
-          - in: path
-            name: fid
-            description: doc ID
-            required: true
-            type: integer
-          - in: path
-            name: page
-            description: page
+            description: projectID
             required: true
             type: integer
         responses:
@@ -2071,36 +1905,64 @@
             description: OK
             schema:
               required:
-                - commentList
-                - count
+                - memberList
               properties:
-                commentList:
+                memberList:
                   type: array
                   items:
                     required:
+                      - userID
                       - username
                       - avatar
-                      - time
-                      - content
-                      - id
+                      - group
+                      - role
                     properties:
+                      userID:
+                        type: integer
                       username:
                         type: string
                       avatar:
                         type: string
-                      time:
+                      group:
                         type: string
-                      content:
-                        type: string
-                      id:
+                      role: 
                         type: integer
-                count:
-                  type: integer
-                  description: 一共有多少条评论（所以有多少页你要自己算哦）
-          401:
-            description: verify failed
         security:
         - token: []
+      put:
+        tags:
+          - project
+        summary: change the list of project members
+        description: get groupID and list ,and change it
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: pid
+            description: projectID
+            required: true
+            type: integer
+          - name: POSTdata
+            in: body
+            description: userlist
+            schema:
+              required:
+                - userList
+              properties:
+                userList:
+                  type: array
+                  items:
+                    type: integer
+        responses:
+          200:
+            description: change it successfully
+          404:
+            description: errmsg    
+        security:
+        - token: []
+        
     /project/{pid}/doc/{fid}/comments/:
       post:
         tags:
@@ -2134,11 +1996,236 @@
         responses:
           201:
             description: OK
-          401:
-            description: verify failed
+          404:
+            description: errmsg
+        security:
+        - token: []
+      get:
+        tags:
+          - project
+        summary: get information of comments 
+        description: get username,avatar,time,including
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: file ID
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - commentList
+                - count
+              properties:
+                commentList:
+                  type: array
+                  items:
+                    required:
+                      - username
+                      - avatar
+                      - time
+                      - content
+                      - id
+                    properties:
+                      username:
+                        type: string
+                      avatar:
+                        type: string
+                      time:
+                        type: string
+                      content:
+                        type: string
+                      id:
+                        type: integer
+                count:
+                  type: integer
+        security:
+        - token: []
+        
+    /project/{pid}/doc/{fid}/comment/{cid}/:
+      delete:
+        tags:
+          - project
+        summary: delete a comment by id
+        description: admin
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: cid
+            description: comment id
+            required: true
+            type: integer
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: file ID
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+          404:
+            description: errmsg
+        security:
+        - token: []
+      get:
+        tags:
+          - project
+        summary: get a comment
+        description: get
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: doc ID
+            required: true
+            type: integer
+          - in: path
+            name: cid
+            description: comment id
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - commentList
+              properties:
+                commentList:
+                  type: array
+                  items:
+                    required:
+                      - username
+                      - avatar
+                      - time
+                      - content
+                      - id
+                    properties:
+                      username:
+                        type: string
+                      avatar:
+                        type: string
+                      time:
+                        type: string
+                      content:
+                        type: string
+                      id:
+                        type: integer
+          404:
+            description: errmsg
         security:
         - token: []
 
+    /project/{pid}/file/{fid}/comments/:
+      get:
+        tags:
+          - project
+        summary: get a list of comment
+        description: get
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: file ID
+            required: true
+            type: integer
+        responses:
+          200:
+            description: OK
+            schema:
+              required:
+                - commentList
+                - count
+              properties:
+                commentList:
+                  type: array
+                  items:
+                    required:
+                      - username
+                      - avatar
+                      - time
+                      - content
+                      - id
+                    properties:
+                      username:
+                        type: string
+                      avatar:
+                        type: string
+                      time:
+                        type: string
+                      content:
+                        type: string
+                      id:
+                        type: integer
+                count:
+                  type: integer
+                  description: 一共有多少条评论（所以有多少页你要自己算哦）
+        security:
+        - token: []
+      post:
+        tags:
+          - project
+        summary: comment a file
+        description: verify and post 
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            name: pid
+            description: project ID
+            required: true
+            type: integer
+          - in: path
+            name: fid
+            description: file ID
+            required: true
+            type: integer
+          - name: POSTdata
+            in: body
+            description: post a new comment
+            schema:
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+        responses:
+          201:
+            description: cid
+          404:
+            description: errmsg
+        security:
+        - token: []
+        
     /project/{pid}/file/{fid}/comment/{cid}/:
       get:
         tags:
@@ -2181,10 +2268,8 @@
                   type: string
                 content:
                   type: string
-          401:
-            description: verify failed
-          402:
-            description: can't find comment
+          404:
+            description: errmsg
         security:
         - token: []
       delete:
@@ -2213,109 +2298,11 @@
         responses:
           200:
             description: OK
-          401:
-            description: verify failed
-          402:
-            description: can't find
+          404:
+            description: errmsg
         security:
         - token: []
-    /project/{pid}/file/{fid}/comments/{page}/:
-      get:
-        tags:
-          - project
-        summary: get a list of comment
-        description: get
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: pid
-            description: project ID
-            required: true
-            type: integer
-          - in: path
-            name: fid
-            description: file ID
-            required: true
-            type: integer
-          - in: path
-            name: page
-            description: page
-            required: true
-            type: integer
-        responses:
-          200:
-            description: OK
-            schema:
-              required:
-                - commentList
-              properties:
-                commentList:
-                  type: array
-                  items:
-                    required:
-                      - username
-                      - avatar
-                      - time
-                      - content
-                      - id
-                    properties:
-                      username:
-                        type: string
-                      avatar:
-                        type: string
-                      time:
-                        type: string
-                      content:
-                        type: string
-                      id:
-                        type: integer
-                count:
-                  type: integer
-                  description: 一共有多少条评论（所以有多少页你要自己算哦）
-          401:
-            description: verify failed
-          402:
-            description: project or file not found
-        security:
-        - token: []
-    /project/{pid}/file/{fid}/comments/:
-      post:
-        tags:
-          - project
-        summary: comment a file
-        description: verify and post 
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - in: path
-            name: pid
-            description: project ID
-            required: true
-            type: integer
-          - in: path
-            name: fid
-            description: file ID
-            required: true
-            type: integer
-          - name: POSTdata
-            in: body
-            description: post a new comment
-            schema:
-              required:
-                - content
-              properties:
-                content:
-                  type: string
-        responses:
-          201:
-            description: OK
-          401:
-            description: verify failed
-        security:
-        - token: []
+
 
     /folder/filetree/<int:pid>/:
       get:
@@ -2341,10 +2328,8 @@
                   description: the filetree of this project;
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
       put:
@@ -2372,10 +2357,8 @@
             description: update
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 
@@ -2403,10 +2386,8 @@
                   description: the doctree of this project;
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
       put:
@@ -2434,10 +2415,8 @@
             description: update
           401:
             description: forbidden
-          403:
-            description: method not allowed
-          500:
-            description: server error
+          404:
+            description: errmsg
         security:
         - token: []
 

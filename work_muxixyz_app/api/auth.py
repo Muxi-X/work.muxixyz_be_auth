@@ -4,12 +4,17 @@ from .. import db
 from ..models import Team, User, Apply
 from ..decorator import login_required
 
+import requests
+import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+
 AVATARURL = 'https://static.muxixyz.com/workbench/avatar/{}.png'
+
 # 头像总数14个，因此%14 +1
 AVATARALL = 14
+
 
 @api.route('/auth/signup/', methods = ['POST'])
 def signup():
@@ -55,14 +60,14 @@ def signup():
 @api.route('/auth/login/', methods=['POST'])
 def login():
     user_email = request.get_json().get('email')
-    usr = User.query.filter_by(email=user_email).first()
-    if usr is None:
-        response = jsonify({
-            "msg": 'user not existed!',
-        })
-        response.status_code = 401
-        return response
+    token_string = request.get_json().get('token')
+    status = check_pass2_auth(user_email, token_string)
+    if status != 200:
+        return jsonify({
+            "reason": "check token error."
+        }), 500
     else:
+        usr = User.query.filter_by(email=user_email).first()
         if usr.avatar is None:
             usr.avatar = AVATARURL.format((usr.id % AVATARALL) + 1)
             db.session.add(usr)
@@ -75,3 +80,16 @@ def login():
         })
         response.status_code = 200
         return response
+
+
+def check_pass2_auth(email, token):
+    session = requests.Session()
+    session.headers = {
+        "content-type": "application/json"
+    }
+    scheme = ["http://", "https://"]
+    domain_name = os.getenv("WORKBENCH_PASS2_DOMAIN", "pass2.muxixyz.com")
+    path = "/auth/api/check_token?token={}&&email={}"
+
+    response = session.get(scheme[0]+domain_name+path.format(token, email))
+    return response.status_code

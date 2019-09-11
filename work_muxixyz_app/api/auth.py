@@ -68,6 +68,10 @@ def login():
         }), 500
     else:
         usr = User.query.filter_by(email=user_email).first()
+        if usr is None:
+            return jsonify({
+                "message": "user not found."
+            }), 404
         if usr.avatar is None:
             usr.avatar = AVATARURL.format((usr.id % AVATARALL) + 1)
             db.session.add(usr)
@@ -92,4 +96,5 @@ def check_pass2_auth(email, token):
     path = "/auth/api/check_token?token={}&&email={}"
 
     response = session.get(scheme[0]+domain_name+path.format(token, email))
+    print(scheme[0]+domain_name+path.format(token, email), response.status_code)
     return response.status_code

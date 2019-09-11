@@ -64,7 +64,8 @@ def login():
     status = check_pass2_auth(user_email, token_string)
     if status != 200:
         return jsonify({
-            "reason": "check token error."
+            "reason": "check token error.",
+            "status_code": status,
         }), 500
     else:
         usr = User.query.filter_by(email=user_email).first()
